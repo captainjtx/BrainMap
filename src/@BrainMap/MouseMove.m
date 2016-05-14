@@ -4,7 +4,6 @@ cursor=get(obj.fig,'CurrentPoint');
 in_view=obj.isIn(cursor,position);
 set(obj.fig,'Pointer','arrow');
 if in_view
-    
     if obj.JTogNewElectrode.isSelected()
         set(obj.fig,'Pointer','crosshair');
     end

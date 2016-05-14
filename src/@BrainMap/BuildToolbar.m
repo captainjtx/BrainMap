@@ -28,7 +28,7 @@ obj.JToolbar(1).add(obj.JCanvasColor);
 
 obj.JToolbar(1).addSeparator();
 
-obj.JTogNewElectrode=javaObjectEDT(TogButton([obj.brainmap_path,'/db/icon/evts.png'],btn_d,char('New electrode (ctrl i)'),col));
+obj.JTogNewElectrode=javaObjectEDT(TogButton([obj.brainmap_path,'/db/icon/new_ele.png'],btn_d,char('New electrode (ctrl i)'),col));
 % set(handle(obj.JTogNewElectrode,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeMouseMode(obj,1));
 obj.JToolbar(1).add(obj.JTogNewElectrode);
 obj.JToolbar(1).addSeparator();
