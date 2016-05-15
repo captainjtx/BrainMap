@@ -79,7 +79,7 @@ public class FileLoadTree
     private DefaultMutableTreeNode OthersNode = null;
     private DefaultTreeModel defaultTreeModel;
     
-    public int getEelctrodeID()
+    public int getElectrodeID()
     {
         return ElectrodeID;
     }

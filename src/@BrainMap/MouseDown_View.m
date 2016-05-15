@@ -1,5 +1,5 @@
 function MouseDown_View(obj)
-            
+
 currp=get(obj.axis_3d,'CurrentPoint');
 currp=currp(1,:)';
 
@@ -15,15 +15,17 @@ if obj.JTogNewElectrode.isSelected()
     
     interp=[];
     
+    vol_flag=false;
     for i=1:length(is_vol)
         if ~isempty(is_vol{i})
-            mapval=obj.mapObj(allkeys{i});
-            if mapval.checked
-                for l=1:length(mapval.handles)
-                    x=get(mapval.handles(l),'XData');
-                    y=get(mapval.handles(l),'YData');
-                    z=get(mapval.handles(l),'ZData');
-                    alpha=get(mapval.handles(l),'AlphaData');
+            vol=obj.mapObj(allkeys{i});
+            if vol.checked
+                vol_flag=true;
+                for l=1:length(vol.handles)
+                    x=get(vol.handles(l),'XData');
+                    y=get(vol.handles(l),'YData');
+                    z=get(vol.handles(l),'ZData');
+                    alpha=get(vol.handles(l),'AlphaData');
                     
                     % p1  p2
                     % p3  p4
@@ -45,6 +47,10 @@ if obj.JTogNewElectrode.isSelected()
         end
     end
     
+    if ~vol_flag
+        return
+    end
+    
     
     %find the closeset one to the camera position
     %%
@@ -59,61 +65,62 @@ if obj.JTogNewElectrode.isSelected()
     %%
     if isempty(obj.SelectedElectrode)
         %create a new electrode
+        new_channame='1';
+        
         fpath=[pwd,'/Electrode',num2str(obj.JFileLoadTree.getElectrodeID()+1)];
         num=obj.JFileLoadTree.addElectrode(fpath,true);
-        mapval=Electrode;
+        electrode=Electrode;
         
-        mapval.file=fpath;
-        mapval.ind=num;
-        mapval.coor=new_coor;
-        mapval.radius=new_radius;
-        mapval.thickness=new_thickness;
-        mapval.color=obj.ecolor;
-        mapval.norm=new_norm;
-        mapval.checked=true;
-        mapval.selected=true;
-        mapval.channame='1';
-        mapval.coor_interp=10;
-        mapval.map_alpha=0.8;
-        mapval.map_colormap='jet';
-        mapval.radius_ratio=1;
-        mapval.thickness_ratio=1;
-        
-        obj.mapObj([mapval.category,num2str(num)])=mapval;
+        electrode.file=fpath;
+        electrode.ind=num;
+        electrode.coor=new_coor;
+        electrode.radius=new_radius;
+        electrode.thickness=new_thickness;
+        electrode.color=obj.ecolor;
+        electrode.norm=new_norm;
+        electrode.checked=true;
+        electrode.selected=true;
+        electrode.channame=new_channame;
+        electrode.coor_interp=10;
+        electrode.map_alpha=0.8;
+        electrode.map_colormap='jet';
+        electrode.radius_ratio=1;
+        electrode.thickness_ratio=1;
     else
-        new_channame=num2str(size(mapval.coor,1));
-        mapval=obj.mapObj(['mapval',num2str(obj.SelectedElectrode)]);
+        electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+        new_channame=num2str(size(electrode.coor,1));
         
-        mapval.coor=cat(1,mapval.coor,new_coor);
-        mapval.norm=cat(1,mapval.norm,new_norm);
-        mapval.radius=cat(1,mapval.radius(:),new_radius);
-        mapval.thickness=cat(1,mapval.thickness(:),new_thickness);
-        mapval.color=cat(1,mapval.color,obj.ecolor);
+        electrode.coor=cat(1,electrode.coor,new_coor);
+        electrode.norm=cat(1,electrode.norm,new_norm);
+        electrode.radius=cat(1,electrode.radius(:),new_radius);
+        electrode.thickness=cat(1,electrode.thickness(:),new_thickness);
+        electrode.color=cat(1,electrode.color,obj.ecolor);
         
-        mapval.selected=ones(size(mapval.coor,1),1)*false;
-        mapval.selected(end)=true;
+        electrode.selected=ones(size(electrode.coor,1),1)*false;
+        electrode.selected(end)=true;
         
-        mapval.channame=cat(1,mapval.channame(:),new_channame);
-        
-        [faces,vertices] = createContact3D(new_coor,new_norm,new_radius,new_thickness);
-        
-        userdat.name=new_channame;
-        userdat.ele=mapval.ind;
-        
-        new_h=patch('faces',faces,'vertices',vertices,...
-        'facecolor',new_color,'edgecolor','y','UserData',userdat,...
-        'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
-        set(mapval.handles,'edgecolor','none');
-        mapval.handles=cat(1,mapval.handles(:),new_h);
-        
-        obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=mapval;
-        
-        if mapval.ind==obj.mapval_settings.select_ele
-            notify(obj,'ElectrodeSettingsChange')
-        end
-        
-        material dull;
+        electrode.channame=cat(1,electrode.channame(:),new_channame);
     end
+    
+    
+    [faces,vertices] = createContact3D(new_coor,new_norm,new_radius,new_thickness);
+    
+    userdat.name=new_channame;
+    userdat.ele=electrode.ind;
+    
+    new_h=patch('faces',faces,'vertices',vertices,...
+        'facecolor',obj.ecolor,'edgecolor','y','UserData',userdat,...
+        'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
+    set(electrode.handles,'edgecolor','none');
+    electrode.handles=cat(1,electrode.handles(:),new_h);
+    
+    obj.mapObj(['Electrode',num2str(electrode.ind)])=electrode;
+    
+    if electrode.ind==obj.electrode_settings.select_ele
+        notify(obj,'ElectrodeSettingsChange')
+    end
+    
+    material dull;
 else
     obj.loc = get(obj.fig,'CurrentPoint');    % get starting point
     start(obj.RotateTimer);

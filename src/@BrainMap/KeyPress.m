@@ -1,4 +1,14 @@
 function KeyPress(obj,src,evt)
+%**************************************************************************
+%Exit the special mouse mode except for "Pan" (which needs another click on the icon)
+%Exit the special channel selection mode
+if strcmpi(evt.Key,'escape')
+    obj.JTogNewElectrode.setSelected(false);
+    set(obj.fig,'pointer','arrow');
+    return
+end
+%**************************************************************************
+
 if ~isempty(obj.SelectedElectrode)
     electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
     
