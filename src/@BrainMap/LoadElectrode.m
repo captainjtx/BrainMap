@@ -44,7 +44,6 @@ for i=1:size(tmp.coor,1)
 end
 material dull;
 
-mapval.category='Electrode';
 mapval.file=fpath;
 mapval.ind=num;
 mapval.coor=tmp.coor;

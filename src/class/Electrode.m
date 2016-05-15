@@ -24,6 +24,9 @@ classdef Electrode
     end
     
     methods
+        function obj=Electrode()
+            obj.category='Electrode';
+        end
     end
     
 end

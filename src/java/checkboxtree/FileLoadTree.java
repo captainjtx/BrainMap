@@ -79,6 +79,10 @@ public class FileLoadTree
     private DefaultMutableTreeNode OthersNode = null;
     private DefaultTreeModel defaultTreeModel;
     
+    public int getEelctrodeID()
+    {
+        return ElectrodeID;
+    }
     public JScrollPane buildfig()
     {
         tree=new JTree();

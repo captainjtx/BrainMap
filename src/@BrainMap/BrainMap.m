@@ -4,6 +4,7 @@ classdef BrainMap < handle
     properties (Dependent)
         valid
         brainmap_path
+        ecolor
     end
     
     properties
@@ -153,6 +154,11 @@ classdef BrainMap < handle
             obj.electrode_settings=ElectrodeSettings(obj);
         end
         
+        function val=get.ecolor(obj)
+            val=[ obj.JElectrodeColorBtn.getBackground().getRed(),...
+                obj.JElectrodeColorBtn.getBackground().getGreen(),...
+                obj.JElectrodeColorBtn.getBackground().getBlue()]/255;
+        end
         function val=get.brainmap_path(obj)
             [val,~,~]=fileparts(which('brainmap.m'));
         end
@@ -194,12 +200,6 @@ classdef BrainMap < handle
         
         function f=panon(obj)
             f=strcmp(get(pan(obj.fig),'Enable'),'on');
-        end
-        
-        function MouseDown_View(obj)
-            obj.loc = get(obj.fig,'CurrentPoint');    % get starting point
-            start(obj.RotateTimer);
-            set(obj.fig,'windowbuttonupfcn',@(src,evt) MouseUp_View(obj));
         end
         function f=isIn(obj,cursor,position)
             f=cursor(1)>position(1)&&cursor(1)<position(1)+position(3)&&cursor(2)>position(2)&&cursor(2)<position(2)+position(4);
@@ -363,11 +363,8 @@ classdef BrainMap < handle
             end
         end
         function ElectrodeColorCallback(obj)
-            col=[ obj.JElectrodeColorBtn.getBackground().getRed(),...
-                obj.JElectrodeColorBtn.getBackground().getGreen(),...
-                obj.JElectrodeColorBtn.getBackground().getBlue()]/255;
             
-            newcol=uisetcolor(col,'Electrode');
+            newcol=uisetcolor(obj.ecolor,'Electrode');
             obj.JElectrodeColorBtn.setBackground(java.awt.Color(newcol(1),newcol(2),newcol(3)));
             
             if ~isempty(obj.SelectedElectrode)
@@ -485,7 +482,7 @@ classdef BrainMap < handle
         ChangeMouseMode(obj,opt)
         MouseMove(obj)
         KeyPress(obj,src,evt)
-        MouseDown(obj)
+        MouseDown_View(obj)
         VolumeRenderCallback(obj)
     end
     events
