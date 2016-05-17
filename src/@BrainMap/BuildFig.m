@@ -11,64 +11,27 @@ screensize=get(0,'ScreenSize');
 obj.fig=figure('Menubar','none','Name',['Welcome to BrainMap ',char(169),'2016 Tianxiao Jiang'],...
     'units','pixels','position',[screensize(3)/2-500,screensize(4)/2-325,1000,650],...
     'NumberTitle','off','CloseRequestFcn',@(src,evts) OnClose(obj),'resize','off','Dockcontrols','off',...
-    'WindowButtonMotionFcn',@(src,evt) MouseMove(obj),'WindowKeyPressFcn',@(src,evt) KeyPress(obj,src,evt));
+    'WindowKeyPressFcn',@(src,evt) KeyPress(obj,src,evt));
 
-%==========================================================================
+obj.IconLoadSurface=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/load_surf.png']));
+obj.IconDeleteSurface=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/delete_surf.png']));
+obj.IconNewSurface=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/new_surf.png']));
+obj.IconSaveSurface=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/save_surf.png']));
 
-obj.FileMenu=uimenu(obj.fig,'label','File');
-obj.LoadMenu=uimenu(obj.FileMenu,'label','Load');
+obj.IconLoadVolume=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/load_vol.png']));
+obj.IconDeleteVolume=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/delete_vol.png']));
+obj.IconNewVolume=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/new_vol.png']));
+obj.IconSaveVolume=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/save_vol.png']));
+obj.Icon3DVolume=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/vol3d.png']));
 
-obj.LoadVolumeMenu=uimenu(obj.LoadMenu,'label','Volume','callback',@(src,evt) LoadVolume(obj),'Accelerator','o');
-obj.LoadSurfaceMenu=uimenu(obj.LoadMenu,'label','Surface','callback',@(src,evt) LoadSurface(obj),'Accelerator','u');
-obj.LoadElectrodeMenu=uimenu(obj.LoadMenu,'label','Electrode','callback',@(src,evt) LoadElectrode(obj),'Accelerator','e');
+obj.IconLoadElectrode=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/load_electrode.png']));
+obj.IconDeleteElectrode=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/delete_electrode.png']));
+obj.IconNewElectrode=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/new_electrode.png']));
+obj.IconSaveElectrode=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/save_electrode.png']));
+obj.IconInterpolateElectrode=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/interpolate.png']));
+obj.IconLoadMap=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon/map.png']));
 
-obj.SettingsMenu=uimenu(obj.fig,'label','Settings');
-obj.SettingsBackgroundColorMenu=uimenu(obj.SettingsMenu,'label','Canvas Color','callback',@(src,evt) ChangeCanvasColor(obj));
-
-obj.SaveAsMenu=uimenu(obj.FileMenu,'label','Save as');
-obj.SaveAsFigureMenu=uimenu(obj.SaveAsMenu,'label','Figuer','callback',@(src,evt) SaveAsFigure(obj),'Accelerator','p');
-
-obj.ElectrodeMenu=uimenu(obj.fig,'label','Electrode');
-
-obj.ViewMenu=uimenu(obj.fig,'label','View');
-obj.ViewLayoutMenu=uimenu(obj.ViewMenu,'label','Layout');
-obj.ViewCameraMenu=uimenu(obj.ViewMenu,'label','Camera');
-%%
-obj.ElectrodeRotateMenu=uimenu(obj.ElectrodeMenu,'label','Rotate');
-obj.ElectrodeRotateLeftMenu=uimenu(obj.ElectrodeRotateMenu,...
-    'label','<html> Left<span style="font-size:10"> left arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-
-obj.ElectrodeRotateRightMenu=uimenu(obj.ElectrodeRotateMenu,...
-    'label','<html> Right<span style="font-size:10"> right arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-
-obj.ElectrodeRotateUpMenu=uimenu(obj.ElectrodeRotateMenu,...
-    'label','<html> Up<span style="font-size:10"> up arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-
-obj.ElectrodeRotateDownMenu=uimenu(obj.ElectrodeRotateMenu,...
-    'label','<html> Down<span style="font-size:10"> down arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-%%
-obj.ElectrodePushPullMenu=uimenu(obj.ElectrodeMenu,'label','Push/Pull');
-obj.ElectrodePushInMenu=uimenu(obj.ElectrodePushPullMenu,...
-    'label','<html>Inward<span style="font-size:10;"> Cmd + down arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-
-obj.ElectrodePullOutMenu=uimenu(obj.ElectrodePushPullMenu,...
-    'label','<html> Outward<span style="font-size:10"> Cmd + up arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-%%
-obj.ElectrodeSpinMenu=uimenu(obj.ElectrodeMenu,'label','Spin');
-obj.ElectrodeSpinClockwiseMenu=uimenu(obj.ElectrodeSpinMenu,...
-    'label','<html> Clockwise<span style="font-size:10"> Cmd + right arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-
-obj.ElectrodeSpinAntiClockwiseMenu=uimenu(obj.ElectrodeSpinMenu,...
-    'label','<html> Anti-clockwise<span style="font-size:10"> Cmd + left arrow</span></html>',...
-    'callback',@(src,evt) MoveElectrode(obj,src));
-
+MakeMenu(obj);
 %==========================================================================
 obj.ViewPanel=uipanel(obj.fig,'units','normalized','position',[0,0.1,0.7,0.9],'backgroundcolor',[0,0,0]);
 obj.InfoPanel=uipanel(obj.fig,'units','normalized','position',[0,0,1,0.1]);
@@ -255,6 +218,10 @@ set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapInterpolati
 %%
 obj.TextInfo=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0,0,1,1],...
     'style','Text','String','','HorizontalAlignment','left','fontweight','bold','fontsize',14);
+
+%%
+set(obj.fig,'WindowButtonMotionFcn',@(src,evt) MouseMove(obj));
+
 end
 %%
 function h=colormap_popup(varargin)

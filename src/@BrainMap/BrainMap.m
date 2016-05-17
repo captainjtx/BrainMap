@@ -12,32 +12,46 @@ classdef BrainMap < handle
         axis_3d
         
         FileMenu
-        LoadMenu
-        LoadVolumeMenu
-        LoadSurfaceMenu
-        LoadElectrodeMenu
+        JFileMenu
+        JLoadMenu
+        JLoadVolumeMenu
+        JLoadSurfaceMenu
+        JLoadElectrodeMenu
         
-        SaveAsMenu
-        SaveAsFigureMenu
+        JSaveAsMenu
+        JSaveAsFigureMenu
+        
         SettingsMenu
-        SettingsBackgroundColorMenu
+        JSettingsMenu
+        JSettingsBackgroundColorMenu
         
         ElectrodeMenu
-        ElectrodeRotateMenu
-        ElectrodeRotateLeftMenu
-        ElectrodeRotateRightMenu
-        ElectrodeRotateUpMenu
-        ElectrodeRotateDownMenu
-        ElectrodePushPullMenu
-        ElectrodePullOutMenu
-        ElectrodePushInMenu
-        ElectrodeSpinMenu
-        ElectrodeSpinClockwiseMenu
-        ElectrodeSpinAntiClockwiseMenu
+        JElectrodeMenu
+        JElectrodeRotateMenu
+        JElectrodeRotateLeftMenu
+        JElectrodeRotateRightMenu
+        JElectrodeRotateUpMenu
+        JElectrodeRotateDownMenu
+        JElectrodePushPullMenu
+        JElectrodePullOutMenu
+        JElectrodePushInMenu
+        JElectrodeSpinMenu
+        JElectrodeSpinClockwiseMenu
+        JElectrodeSpinCounterClockwiseMenu
         
         ViewMenu
-        ViewLayoutMenu
-        ViewCameraMenu
+        JViewMenu
+        JViewLayoutMenu
+        JViewCameraMenu
+        JViewLayoutOneMenu
+        JViewLayoutTwoTwoMenu
+        JViewLayoutOneThreeHorizontalMenu
+        JViewLayoutOneThreeVerticalMenu
+        
+        JViewLayoutSagittalMenu
+        JViewLayoutCoronalMenu
+        JViewLayoutAxialMenu
+        JViewLayout3DMenu
         
         ViewPanel
         InfoPanel
@@ -122,6 +136,7 @@ classdef BrainMap < handle
         JMapInterpolationSpinner
         
         TextInfo
+        
     end
     properties
         light
@@ -477,13 +492,14 @@ classdef BrainMap < handle
         ElectrodeRadiusSpinnerCallback(obj)
         ElectrodeThicknessRatioSpinnerCallback(obj)
         ElectrodeRadiusRatioSpinnerCallback(obj)
-        MoveElectrode(obj,src)
+        MoveElectrode(obj,opt)
         VolumeSmoothSpinnerCallback(obj)
         ChangeMouseMode(obj,opt)
         MouseMove(obj)
         KeyPress(obj,src,evt)
         MouseDown_View(obj)
         VolumeRenderCallback(obj)
+        MakeMenu(obj)
     end
     events
         ElectrodeSettingsChange

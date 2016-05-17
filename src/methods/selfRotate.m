@@ -1,4 +1,5 @@
 function new_coor = selfRotate(coor,origin,theta)
+%clockwise rotation
 center=mean(coor,1);
 
 V=center-origin;

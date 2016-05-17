@@ -2,11 +2,24 @@ function KeyPress(obj,src,evt)
 %**************************************************************************
 %Exit the special mouse mode except for "Pan" (which needs another click on the icon)
 %Exit the special channel selection mode
-if strcmpi(evt.Key,'escape')
-    obj.JTogNewElectrode.setSelected(false);
-    set(obj.fig,'pointer','arrow');
-    return
+if isempty(evt.Modifier)
+    if strcmpi(evt.Key,'escape')
+        obj.JTogNewElectrode.setSelected(false);
+        set(obj.fig,'pointer','arrow');
+        return
+    end
+elseif length(evt.Modifier)==1
+    if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
+        
+        if strcmpi(evt.Key,'P')
+            SaveAsFigure(obj);
+        elseif strcmpi(evt.Key,'B')
+            ChangeCanvasColor(obj);
+        end
+    end
 end
+
+
 %**************************************************************************
 
 if ~isempty(obj.SelectedElectrode)
@@ -35,7 +48,7 @@ if ~isempty(obj.SelectedElectrode)
         end
     else
         if length(evt.Modifier)==1
-            if ismember('command',evt.Modifier)||ismember('control',evt.Modifier)
+            if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
                 if strcmpi(evt.Key,'uparrow')
                     electrode.coor(ind,:)=axialTranslate(electrode.coor(ind,:),camtarget(obj.axis_3d),0.025);
                     redraw_electrode=true;
@@ -70,7 +83,7 @@ if ~isempty(obj.SelectedElectrode)
                 end
             end
         elseif length(evt.Modifier)==2
-            if ismember('command',evt.Modifier)||ismember('control',evt.Modifier)
+            if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
                 if ismember('shift',evt.Modifier)
                     if strcmpi(evt.Key,'uparrow')
                         electrode.coor(ind,:)=axialTranslate(electrode.coor(ind,:),camtarget(obj.axis_3d),0.005);

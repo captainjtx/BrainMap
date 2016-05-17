@@ -1,32 +1,49 @@
-function MoveElectrode( obj,src )
-
-switch src
-    case obj.ElectrodeRotateLeftMenu
+function MoveElectrode( obj,opt )
+switch opt
+    case 1
         evt.Modifier={};
         evt.Key='leftarrow';
-    case ElectrodeRotateRightMenu
+    case 2
         evt.Modifier={};
         evt.Key='rightarrow';
-    case ElectrodeRotateUpMenu
+    case 3
         evt.Modifier={};
         evt.Key='uparrow';
-    case ElectrodeRotateDownMenu
+    case 4
         evt.Modifier={};
         evt.Key='downarrow';
-    case ElectrodePushInMenu
-        evt.Modifier={'command'};
+    case 5
+        if ismac
+            evt.Modifier={'command'};
+        elseif ispc
+            evt.Modifier={'control'};
+        end
         evt.Key='downarrow';
-    case ElectrodePullOutMenu
-        evt.Modifier={'command'};
+    case 6
+        if ismac
+            evt.Modifier={'command'};
+        elseif ispc
+            evt.Modifier={'control'};
+        end
         evt.Key='uparrow';
-    case ElectrodeSpinClockwiseMenu
-        evt.Modifier={'command'};
+    case 7
+        if ismac
+            evt.Modifier={'command'};
+        elseif ispc
+            evt.Modifier={'control'};
+        end
         evt.Key='rightarrow';
-    case ElectrodeSpinAntiClockwiseMenu
-        evt.Modifier={'command'};
+    case 8
+        if ismac
+            evt.Modifier={'command'};
+        elseif ispc
+            evt.Modifier={'control'};
+        end
         evt.Key='leftarrow';
 end
-KeyPress(obj,src,evt);
+% disp(opt)
+
+KeyPress(obj,[],evt);
 
 end
 
