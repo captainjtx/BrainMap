@@ -10,6 +10,9 @@ classdef BrainMap < handle
     properties
         fig
         axis_3d
+        axis_sagittal
+        axis_coronal
+        axis_axial
         
         FileMenu
         JFileMenu
@@ -54,6 +57,11 @@ classdef BrainMap < handle
         JViewLayout3DMenu
         
         ViewPanel
+        View3DPanel
+        ViewSagittalPanel
+        ViewCoronalPanel
+        ViewAxialPanel
+        
         InfoPanel
         
         Toolbar
@@ -92,7 +100,7 @@ classdef BrainMap < handle
         JNewBtn
         JSaveBtn
         
-        sidepane
+        SidePanel
         toolbtnpane
         
         surfacetoolpane
@@ -247,7 +255,7 @@ classdef BrainMap < handle
         end
         
         function SaveAsFigure(obj)
-            set(obj.TextInfo,'String','Printing figure ...','FontSize',18,...
+            set(obj.TextInfo,'String','Printing figure ...','FontSize',0.4,...
                 'Foregroundcolor','r','HorizontalAlignment','center');
             drawnow
             
@@ -259,7 +267,7 @@ classdef BrainMap < handle
             copyobj(obj.axis_3d,f);
             
             colormap(colormap(obj.axis_3d));
-            set(obj.TextInfo,'String','Figure print complete !','FontSize',18,...
+            set(obj.TextInfo,'String','Figure print complete !','FontSize',0.4,...
                 'Foregroundcolor',[12,60,38]/255,'HorizontalAlignment','center');
         end
         
@@ -272,7 +280,7 @@ classdef BrainMap < handle
         end
         
         function CheckChangedCallback(obj,src,evt)
-            set(obj.TextInfo,'String','Refreshing axis ...','fontsize',18,...
+            set(obj.TextInfo,'String','Refreshing axis ...','fontsize',0.4,...
                 'ForegroundColor','r','HorizontalAlignment','center');
             drawnow
             mapval=obj.mapObj(char(evt.getKey()));
@@ -287,7 +295,7 @@ classdef BrainMap < handle
             if mapval.ind==obj.electrode_settings.select_ele
                 notify(obj,'ElectrodeSettingsChange')
             end
-            set(obj.TextInfo,'String','Axis refresh complete !','fontsize',18,...
+            set(obj.TextInfo,'String','Axis refresh complete !','fontsize',0.4,...
                 'ForegroundColor',[12,60,38]/255,'HorizontalAlignment','center');
             %             disp(evt.filename)
             %             disp(evt.ischecked)
@@ -353,7 +361,11 @@ classdef BrainMap < handle
         end
         
         function ChangeCanvasColor(obj)
-            set(obj.ViewPanel,'BackgroundColor',uisetcolor(get(obj.ViewPanel,'BackgroundColor'),'Background'))
+            col=uisetcolor(get(obj.ViewPanel,'BackgroundColor'),'Background');
+            set(obj.View3DPanel,'BackgroundColor',col);
+            set(obj.ViewSagittalPanel,'BackgroundColor',col);
+            set(obj.ViewCoronalPanel,'BackgroundColor',col);
+            set(obj.ViewAxialPanel,'BackgroundColor',col);
         end
         
         function VolumeColormapCallback(obj)
@@ -473,6 +485,26 @@ classdef BrainMap < handle
                 obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
             end
         end
+        
+        function resize(obj)
+            if isempty(obj.fig)
+                return
+            end
+            
+            side_h=600;
+            side_w=300;
+            
+            pos=get(obj.fig,'position');
+            
+            pos(3)=max(pos(3),side_w);
+            pos(4)=max(pos(4),side_h);
+            
+            set(obj.ViewPanel,'position',[0,pos(4)-side_h,pos(3)-side_w,side_h]);
+            set(obj.SidePanel,'position',[pos(3)-side_w,pos(4)-side_h,side_w,side_h]);
+            set(obj.InfoPanel,'position',[0,0,pos(3),pos(4)-side_h]);
+            
+            set(obj.fig,'position',pos);
+        end
     end
     methods
         LoadSurface(obj)
@@ -500,6 +532,7 @@ classdef BrainMap < handle
         MouseDown_View(obj)
         VolumeRenderCallback(obj)
         MakeMenu(obj)
+        ChangeLayout(obj,src)
     end
     events
         ElectrodeSettingsChange

@@ -10,11 +10,12 @@ if isempty(evt.Modifier)
     end
 elseif length(evt.Modifier)==1
     if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
-        
         if strcmpi(evt.Key,'P')
             SaveAsFigure(obj);
         elseif strcmpi(evt.Key,'B')
             ChangeCanvasColor(obj);
+        elseif strcmpi(evt.Key,'O')
+            LoadVolume(obj);
         end
     end
 end

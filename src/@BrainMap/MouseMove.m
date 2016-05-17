@@ -13,7 +13,7 @@ if in_view
     p=get(obj.axis_3d,'CurrentPoint');
     
     info={['X: ',num2str(p(1,1),'%5.1f')],['Y: ',num2str(p(1,2),'%5.1f')],['Z: ',num2str(p(1,3),'%5.1f')]};
-    set(obj.TextInfo,'String',info,'FontSize',12,'Foregroundcolor','k','HorizontalAlignment','left');
+    set(obj.TextInfo,'String',info,'FontSize',0.2,'Foregroundcolor','k','HorizontalAlignment','left');
 end
 %within the view panel
 f=obj.panon();

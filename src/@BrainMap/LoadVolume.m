@@ -18,6 +18,10 @@ if obj.mapObj.isKey(fpath)
     return
 end
 
+set(obj.TextInfo,'String','Loading volume ...','FontSize',0.4,...
+    'Foregroundcolor','r','HorizontalAlignment','center');
+drawnow
+            
 if strcmp(ext,'.nii')
     out= MRIread(fpath);
     volume=out.vol;
@@ -107,5 +111,8 @@ mapval.checked=true;
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 material dull
+
+set(obj.TextInfo,'String','Volume load complete !','FontSize',0.4,...
+                'Foregroundcolor',[12,60,38]/255,'HorizontalAlignment','center');
 end
 

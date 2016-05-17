@@ -3,10 +3,12 @@ function MakeMenu(obj)
 import javax.swing.JMenu; 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
+import javax.swing.ButtonGroup;
 %==========================================================================
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 jFrame = javaObjectEDT(get(handle(obj.fig),'JavaFrame'));
@@ -31,6 +33,12 @@ obj.JFileMenu=javaObjectEDT(JMenu('File'));
 obj.JLoadMenu=javaObjectEDT(JMenu('Load'));
 obj.JLoadVolumeMenu=javaObjectEDT(JMenuItem('Volume',ImageIcon([obj.brainmap_path,'/db/icon/volume.png'])));
 set(handle(obj.JLoadVolumeMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) LoadVolume(obj));
+if ispc
+    obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
+elseif ismac
+    obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+end
+
 obj.JLoadSurfaceMenu=javaObjectEDT(JMenuItem('Surface',ImageIcon([obj.brainmap_path,'/db/icon/surface.png'])));
 set(handle(obj.JLoadSurfaceMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) LoadSurface(obj));
 obj.JLoadElectrodeMenu=javaObjectEDT(JMenuItem('Electrode',ImageIcon([obj.brainmap_path,'/db/icon/ecog.png'])));
@@ -110,16 +118,26 @@ end
 
 obj.JViewMenu=javaObjectEDT(JMenu('View'));
 
-obj.JViewLayoutMenu=javaObjectEDT(JMenu('Layout'));
-obj.JViewLayoutOneMenu=javaObjectEDT(JMenuItem('1',ImageIcon([obj.brainmap_path,'/db/icon/1.png'])));
-obj.JViewLayoutTwoTwoMenu=javaObjectEDT(JMenuItem('<html> 2&times;2 </html>',ImageIcon([obj.brainmap_path,'/db/icon/2_2.png'])));
-obj.JViewLayoutOneThreeHorizontalMenu=javaObjectEDT(JMenuItem('<html> 1&times;3 Horizontal </html>',ImageIcon([obj.brainmap_path,'/db/icon/1_3_hor.png'])));
-obj.JViewLayoutOneThreeVerticalMenu=javaObjectEDT(JMenuItem('<html> 2&times;2 Vertical</html>',ImageIcon([obj.brainmap_path,'/db/icon/1_3_ver.png'])));
 
-obj.JViewLayoutSagittalMenu=javaObjectEDT(JMenuItem('Sagital',ImageIcon([obj.brainmap_path,'/db/icon/sagittal.png'])));
-obj.JViewLayoutCoronalMenu=javaObjectEDT(JMenuItem('Coronal',ImageIcon([obj.brainmap_path,'/db/icon/coronal.png'])));
-obj.JViewLayoutAxialMenu=javaObjectEDT(JMenuItem('Axial',ImageIcon([obj.brainmap_path,'/db/icon/axial.png'])));
-obj.JViewLayout3DMenu=javaObjectEDT(JMenuItem('3D',ImageIcon([obj.brainmap_path,'/db/icon/3d.png'])));
+obj.JViewLayoutMenu=javaObjectEDT(JMenu('Layout'));
+
+obj.JViewLayoutOneMenu=javaObjectEDT(JCheckBoxMenuItem('1',ImageIcon([obj.brainmap_path,'/db/icon/1.png']),false));
+set(handle(obj.JViewLayoutOneMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+obj.JViewLayoutTwoTwoMenu=javaObjectEDT(JCheckBoxMenuItem('<html> 2&times;2 </html>',ImageIcon([obj.brainmap_path,'/db/icon/2_2.png']),false));
+set(handle(obj.JViewLayoutTwoTwoMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+obj.JViewLayoutOneThreeHorizontalMenu=javaObjectEDT(JCheckBoxMenuItem('<html> 1&times;3 Horizontal </html>',ImageIcon([obj.brainmap_path,'/db/icon/1_3_hor.png']),false));
+set(handle(obj.JViewLayoutOneThreeHorizontalMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+obj.JViewLayoutOneThreeVerticalMenu=javaObjectEDT(JCheckBoxMenuItem('<html> 2&times;2 Vertical</html>',ImageIcon([obj.brainmap_path,'/db/icon/1_3_ver.png']),true));
+set(handle(obj.JViewLayoutOneThreeVerticalMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+
+obj.JViewLayoutSagittalMenu=javaObjectEDT(JCheckBoxMenuItem('Sagittal',ImageIcon([obj.brainmap_path,'/db/icon/sagittal.png']),false));
+set(handle(obj.JViewLayoutSagittalMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+obj.JViewLayoutCoronalMenu=javaObjectEDT(JCheckBoxMenuItem('Coronal',ImageIcon([obj.brainmap_path,'/db/icon/coronal.png']),false));
+set(handle(obj.JViewLayoutCoronalMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+obj.JViewLayoutAxialMenu=javaObjectEDT(JCheckBoxMenuItem('Axial',ImageIcon([obj.brainmap_path,'/db/icon/axial.png']),false));
+set(handle(obj.JViewLayoutAxialMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
+obj.JViewLayout3DMenu=javaObjectEDT(JCheckBoxMenuItem('3D',ImageIcon([obj.brainmap_path,'/db/icon/3d.png']),true));
+set(handle(obj.JViewLayout3DMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeLayout(obj,h));
 
 obj.JViewCameraMenu=javaObjectEDT(JMenu('Camera'));
 
@@ -157,12 +175,25 @@ obj.JViewLayoutMenu.add(obj.JViewLayoutOneMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayoutTwoTwoMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayoutOneThreeHorizontalMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayoutOneThreeVerticalMenu);
+
+group1=javaObjectEDT(ButtonGroup());
+group1.add(obj.JViewLayoutOneMenu);
+group1.add(obj.JViewLayoutTwoTwoMenu);
+group1.add(obj.JViewLayoutOneThreeHorizontalMenu);
+group1.add(obj.JViewLayoutOneThreeVerticalMenu);
+
 obj.JViewLayoutMenu.addSeparator();
 
 obj.JViewLayoutMenu.add(obj.JViewLayoutSagittalMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayoutCoronalMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayoutAxialMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayout3DMenu);
+
+group2=javaObjectEDT(ButtonGroup());
+group2.add((obj.JViewLayoutSagittalMenu));
+group2.add((obj.JViewLayoutCoronalMenu));
+group2.add((obj.JViewLayoutAxialMenu));
+group2.add((obj.JViewLayout3DMenu));
 
 obj.JViewMenu.add(obj.JViewCameraMenu);
 
