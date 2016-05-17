@@ -33,14 +33,18 @@ obj.IconLoadMap=javaObjectEDT(javax.swing.ImageIcon([obj.brainmap_path,'/db/icon
 
 MakeMenu(obj);
 %==========================================================================
-obj.ViewPanel=uipanel(obj.fig,'units','pixel','position',[0,60,700,600],'backgroundcolor','w','BorderType','none');
+obj.ViewPanel=uipanel(obj.fig,'units','pixel','position',[0,60,700,600],'BorderType','none');
 obj.InfoPanel=uipanel(obj.fig,'units','pixel','position',[0,0,1000,60]);
 obj.SidePanel=uipanel(obj.fig,'units','pixel','position',[700,60,300,600],'BorderType','none');
 
-obj.View3DPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0,0,0.7,1],'backgroundcolor','k','BorderType','line');
-obj.ViewSagittalPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0.7,0.6666,0.3,0.3333],'backgroundcolor','k','BorderType','line');
-obj.ViewCoronalPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0.7,0.3333,0.3,0.3333],'backgroundcolor','k','BorderType','line');
-obj.ViewAxialPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0.7,0,0.3,0.3333],'backgroundcolor','k','BorderType','line');
+obj.View3DPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0,0,1,1],...
+    'backgroundcolor','k','BorderType','line','visible','off');
+obj.ViewSagittalPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0,0,1,1],...
+    'backgroundcolor','k','BorderType','line','visible','off');
+obj.ViewCoronalPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0,0,1,1],...
+    'backgroundcolor','k','BorderType','line','visible','off');
+obj.ViewAxialPanel=uipanel(obj.ViewPanel,'units','normalized','position',[0,0,1,1],...
+    'backgroundcolor','k','BorderType','line','visible','off');
 
 obj.axis_3d=axes('parent',obj.View3DPanel,'visible','off','CameraViewAngle',10);
 daspect(obj.axis_3d,[1,1,1]);
@@ -48,8 +52,11 @@ obj.light=camlight('headlight','infinite');
 material dull;
 
 obj.axis_sagittal=axes('parent',obj.ViewSagittalPanel,'visible','off','units','normalized','position',[0,0,1,1]);
+daspect(obj.axis_sagittal,[1,1,1]);
 obj.axis_coronal=axes('parent',obj.ViewCoronalPanel,'visible','off','units','normalized','position',[0,0,1,1]);
+daspect(obj.axis_coronal,[1,1,1]);
 obj.axis_axial=axes('parent',obj.ViewAxialPanel,'visible','off','units','normalized','position',[0,0,1,1]);
+daspect(obj.axis_axial,[1,1,1]);
 
 obj.RotateTimer=timer('TimerFcn',@ (src,evts) RotateTimerCallback(obj),'ExecutionMode','fixedRate','BusyMode','drop','period',0.1);
 %             obj.
@@ -227,7 +234,11 @@ obj.TextInfo=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0
 
 %%
 set(obj.fig,'WindowButtonMotionFcn',@(src,evt) MouseMove(obj));
-
+%%
+p2=[obj.JViewLayoutSagittalMenu,obj.JViewLayoutCoronalMenu,obj.JViewLayoutAxialMenu,obj.JViewLayout3DMenu];
+p1=[obj.JViewLayoutOneMenu,obj.JViewLayoutTwoTwoMenu,obj.JViewLayoutOneThreeHorizontalMenu,obj.JViewLayoutOneThreeVerticalMenu];
+ChangeLayout(obj,p1(obj.cfg.layout(1)));
+ChangeLayout(obj,p2(obj.cfg.layout(2)));
 end
 %%
 function h=colormap_popup(varargin)

@@ -5,6 +5,8 @@ classdef BrainMap < handle
         valid
         brainmap_path
         ecolor
+        
+        cfg_name
     end
     
     properties
@@ -168,13 +170,25 @@ classdef BrainMap < handle
         electrode_settings
         
         cmapList
+        cfg
     end
     
     methods
         function obj=BrainMap()
+            if exist(obj.cfg_name,'file')==2
+                obj.cfg=load(obj.cfg_name,'-mat');
+            else
+                cfg.layout=[1,4];%1 3D
+                obj.cfg=cfg;
+            end
+            
             obj.varinit();
             
             obj.electrode_settings=ElectrodeSettings(obj);
+        end
+        
+        function val=get.cfg_name(obj)
+            val=[obj.brainmap_path,'/db/cfg/brainmap.cfg'];
         end
         
         function val=get.ecolor(obj)
@@ -194,8 +208,6 @@ classdef BrainMap < handle
             end
         end
         function varinit(obj)
-            
-            
             obj.light=[];
             obj.inView=[];
             
@@ -219,6 +231,8 @@ classdef BrainMap < handle
             catch
             end
             obj.electrode_settings.OnClose();
+            
+            saveConfig(obj);
         end
         
         function f=panon(obj)
@@ -504,6 +518,12 @@ classdef BrainMap < handle
             set(obj.InfoPanel,'position',[0,0,pos(3),pos(4)-side_h]);
             
             set(obj.fig,'position',pos);
+        end
+        
+        
+        function saveConfig(obj)
+            newcfg=obj.cfg;
+            save(obj.cfg_name,'-struct','newcfg','-mat');
         end
     end
     methods
