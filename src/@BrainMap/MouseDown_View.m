@@ -3,6 +3,15 @@ function MouseDown_View(obj)
 currp=get(obj.axis_3d,'CurrentPoint');
 currp=currp(1,:)';
 
+if strcmpi(get(obj.axis_3d,'Projection'),'orthographic')&&strcmpi(get(obj.fig,'renderer'),'opengl')
+    opt=1;
+elseif strcmpi(get(obj.axis_3d,'Projection'),'perspective')&&strcmpi(get(obj.fig,'renderer'),'opengl')
+    opt=2;
+else
+    %painter renderer
+    opt=3;
+end                    
+                    
 if obj.JTogNewElectrode.isSelected()
     origin=camtarget(obj.axis_3d);
     origin=origin(:);
@@ -34,7 +43,15 @@ if obj.JTogNewElectrode.isSelected()
                     p3=[x(end,1),y(end,1),z(end,1)]';
                     p4=[x(end,end),y(end,end),z(end,end)]';
                     
-                    p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
+                    switch opt
+                        case 1
+                            p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
+                        case 2
+                            p0=intersection(p1,p2,p3,eye,currp);
+                        case 3
+                            p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
+                    end
+                            
                     
                     p0_i=round(dot(p0-p1,(p3-p1)/norm(p3-p1))/sqrt((p3-p1)'*(p3-p1))*size(alpha,1));
                     p0_j=round(dot(p0-p1,(p2-p1)/norm(p2-p1))/sqrt((p2-p1)'*(p2-p1))*size(alpha,2));
@@ -80,12 +97,13 @@ if obj.JTogNewElectrode.isSelected()
         electrode.norm=new_norm;
         electrode.checked=true;
         electrode.selected=true;
-        electrode.channame=new_channame;
+        electrode.channame={new_channame};
         electrode.coor_interp=10;
         electrode.map_alpha=0.8;
         electrode.map_colormap='jet';
         electrode.radius_ratio=1;
         electrode.thickness_ratio=1;
+        electrode.map=nan;
     else
         electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
         new_channame=num2str(size(electrode.coor,1));
@@ -100,6 +118,7 @@ if obj.JTogNewElectrode.isSelected()
         electrode.selected(end)=true;
         
         electrode.channame=cat(1,electrode.channame(:),new_channame);
+        electrode.map=cat(1,electrode.map,nan);
     end
     
     

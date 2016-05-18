@@ -1,7 +1,8 @@
 function KeyPress(obj,src,evt)
 %**************************************************************************
-%Exit the special mouse mode except for "Pan" (which needs another click on the icon)
 %Exit the special channel selection mode
+tp=obj.toolpane;
+
 if isempty(evt.Modifier)
     if strcmpi(evt.Key,'escape')
         obj.JTogNewElectrode.setSelected(false);
@@ -10,13 +11,8 @@ if isempty(evt.Modifier)
     end
 elseif length(evt.Modifier)==1
     if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
-        if strcmpi(evt.Key,'P')
-            SaveAsFigure(obj);
-        elseif strcmpi(evt.Key,'B')
-            ChangeCanvasColor(obj);
-        elseif strcmpi(evt.Key,'O')
-            LoadVolume(obj);
-        end
+        
+    elseif ismember('alt',evt.Modifier)
     end
 end
 

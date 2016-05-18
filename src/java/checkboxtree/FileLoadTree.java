@@ -152,16 +152,52 @@ public class FileLoadTree
 //                 TreePath currentPath=tree.getSelectionPath();
 //                 TreePath parentPath=currentPath.getParentPath();
 //                 int num=tree.getRowForPath(currentPath)-tree.getRowForPath(parentPath);
+                 TreePath oldPath= e.getOldLeadSelectionPath();
+                 DefaultMutableTreeNode oldNode=null;
+                 if (oldPath!=null)
+                 {
+                     oldNode = (DefaultMutableTreeNode) oldPath.getLastPathComponent();
+                 }
+                
+                 CheckBoxNodeData oldData=null;
+                 String oldcategory=null;
+                 int oldind=-1;
+                 
+                 if (oldNode != null)
+                 {
+                     Object oldNodeInfo=oldNode.getUserObject();
+                     if (oldNodeInfo instanceof CheckBoxNodeData)
+                     {
+                         oldData = (CheckBoxNodeData) oldNodeInfo;
+                     }
+                 }
+                 
+                 
+                 if (oldData!=null)
+                 {
+                     oldcategory=oldNode.getParent().toString();
+                     oldind=oldData.getID();
+                 }
+                 else
+                 {
+                     if(oldNode!=null)
+                     {
+                         oldcategory=oldNode.toString();
+                         oldind=0;
+                     }
+                 }
+                     
                 
                 if (data!=null)
                 {
                     //subnode
-                    notifyTreeSelection(data.getText(),data.isChecked(),node.getParent().toString(),node.getLevel(),data.getID());
+                    notifyTreeSelection(data.getText(),data.isChecked(),node.getParent().toString(),node.getLevel(),data.getID(),oldcategory,oldind);
+                     
                 }
                 else
                 {
                     //mainnode
-                    notifyTreeSelection(node.toString(),true,node.toString(),node.getLevel(),0);
+                    notifyTreeSelection(node.toString(),true,node.toString(),node.getLevel(),0,oldcategory,oldind);
                 }
             }
         });
@@ -215,6 +251,38 @@ public class FileLoadTree
     }
     private final Hashtable<String,CheckBoxNodeData> nodeCache = new Hashtable<String,CheckBoxNodeData>();
     
+    public String getSelectedItem()
+    {
+        CheckBoxNodeData data = null;
+        
+        DefaultMutableTreeNode node= (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        
+        if (node == null) return null;
+        
+        Object nodeInfo=node.getUserObject();
+        if (nodeInfo instanceof CheckBoxNodeData)
+        {
+            data = (CheckBoxNodeData) nodeInfo;
+        }
+        
+        if (data!=null)
+        {
+            //subnode
+            return node.getParent().toString()+data.getID();
+        }
+        else
+        {
+            //mainnode
+            return node.toString();
+        }
+    }
+    public void clickSurface()
+    {
+        TreePath newPath=new TreePath(defaultTreeModel.getPathToRoot(SurfaceNode));
+        tree.scrollPathToVisible(newPath);
+        tree.setSelectionPath(newPath);
+        
+    }
     public int addSurface(String filename, boolean chk)
     {
             CheckBoxNodeData dat=new CheckBoxNodeData(filename,chk,++SurfaceID);
@@ -233,6 +301,13 @@ public class FileLoadTree
             
             return SurfaceID;
     }
+    public void clickVolume()
+    {
+        TreePath newPath=new TreePath(defaultTreeModel.getPathToRoot(VolumeNode));
+        tree.scrollPathToVisible(newPath);
+        tree.setSelectionPath(newPath);
+        
+    }
     public int addVolume(String filename, boolean chk)
     {
             CheckBoxNodeData dat=new CheckBoxNodeData(filename,chk,++VolumeID);
@@ -248,6 +323,13 @@ public class FileLoadTree
             nodeCache.put("volume"+VolumeID,dat);
             
             return VolumeID;
+    }
+    public void clickElectrode()
+    {
+        TreePath newPath=new TreePath(defaultTreeModel.getPathToRoot(ElectrodeNode));
+        tree.scrollPathToVisible(newPath);
+        tree.setSelectionPath(newPath);
+        
     }
     public int addElectrode(String filename, boolean chk)
     {
@@ -297,12 +379,15 @@ public class FileLoadTree
         public String category;
         public int level;
         public int ind;
+        public String oldcategory;
+        public int oldind;
+        
         public String getKey()
         {
             return category+ind;
         }
         
-        public TreeEvent(Object source, String filename, boolean ischecked, String category, int level, int ind)
+        public TreeEvent(Object source, String filename, boolean ischecked, String category, int level, int ind, String oldcategory,int oldind)
         {
             super(source);
             this.filename=filename;
@@ -310,12 +395,14 @@ public class FileLoadTree
             this.category=category;
             this.level=level;
             this.ind=ind;
+            this.oldcategory=oldcategory;
+            this.oldind=oldind;
         }
     }
-    public void notifyTreeSelection(String filename,boolean ischecked,String category,int level,int ind) {
+    public void notifyTreeSelection(String filename,boolean ischecked,String category,int level,int ind,String oldcategory,int oldind) {
         for(TreeListener obj : treelistener)
         {
-            obj.treeSelection(new TreeEvent(this,filename,ischecked,category,level,ind));
+            obj.treeSelection(new TreeEvent(this,filename,ischecked,category,level,ind,oldcategory,oldind));
         }
     }
     public ArrayList<CheckListener> checklistener = new ArrayList<>();
@@ -331,10 +418,10 @@ public class FileLoadTree
         void checkChanged(TreeEvent event);
     }
 
-    public void notifyCheckChange(String filename,boolean ischecked,String category,int level,int ind) {
+    public void notifyCheckChange(String filename,boolean ischecked,String category,int level,int ind,String oldcategory,int oldind) {
         for(CheckListener obj : checklistener)
         {
-            obj.checkChanged(new TreeEvent(this,filename,ischecked,category,level,ind));
+            obj.checkChanged(new TreeEvent(this,filename,ischecked,category,level,ind, oldcategory, oldind));
         }
     }
     
@@ -367,8 +454,8 @@ public class FileLoadTree
                     {
                         TreePath currentPath=new TreePath(defaultTreeModel.getPathToRoot(node));
                         TreePath parentPath=currentPath.getParentPath();
-                        int num=tree.getRowForPath(currentPath)-tree.getRowForPath(parentPath);
-                        notifyCheckChange(data.getText(),data.isChecked(),node.getParent().toString(),node.getLevel(),num);
+//                         int num=tree.getRowForPath(currentPath)-tree.getRowForPath(parentPath);
+                        notifyCheckChange(data.getText(),data.isChecked(),node.getParent().toString(),node.getLevel(),data.getID(),node.getParent().toString(),data.getID());
                     }
                 }
             };
@@ -680,6 +767,16 @@ public class FileLoadTree
         }
         
     }
+    public void deleteSelectedNode() {
+        DefaultMutableTreeNode node;
+        
+        TreePath[] paths = tree.getSelectionPaths();
+        for (int i = 0; i < paths.length; i++) {
+            node = (DefaultMutableTreeNode) (paths[i].getLastPathComponent());
+            defaultTreeModel.removeNodeFromParent(node);
+        }
+    }
+
     private void expandAllNodes(JTree tree, int startingIndex, int rowCount)
     {
         for(int i=startingIndex;i<rowCount;++i){

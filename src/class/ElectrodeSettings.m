@@ -58,7 +58,7 @@ classdef ElectrodeSettings<handle
             obj.select_ele=obj.bm.SelectedElectrode;
             
             bmpos=get(obj.bm.fig,'position');
-            sidepos = getpixelposition(obj.bm.sidepane);
+            sidepos = getpixelposition(obj.bm.SidePanel);
             screensize=get(0,'ScreenSize');
             
             columnWidth=[40,40,180,180,60,60,40,60];

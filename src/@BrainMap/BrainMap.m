@@ -7,6 +7,11 @@ classdef BrainMap < handle
         ecolor
         
         cfg_name
+        toolpane
+        
+        SelectedElectrode
+        SelectedSurface
+        SelectedVolume
     end
     
     properties
@@ -57,6 +62,11 @@ classdef BrainMap < handle
         JViewLayoutCoronalMenu
         JViewLayoutAxialMenu
         JViewLayout3DMenu
+        
+        JViewInterfaceMenu
+        JViewInterfaceVolumeMenu
+        JViewInterfaceSurfaceMenu
+        JViewInterfaceElectrodeMenu
         
         ViewPanel
         View3DPanel
@@ -158,14 +168,10 @@ classdef BrainMap < handle
         
         mapObj
         
-        SelectEvt
-        
         cmin
         cmax
         
         smooth_sigma
-        
-        SelectedElectrode
         
         electrode_settings
         
@@ -179,12 +185,57 @@ classdef BrainMap < handle
                 obj.cfg=load(obj.cfg_name,'-mat');
             else
                 cfg.layout=[1,4];%1 3D
+                cfg.interface=1;%volume
                 obj.cfg=cfg;
+                
             end
             
             obj.varinit();
             
             obj.electrode_settings=ElectrodeSettings(obj);
+        end
+        
+        function val=get.SelectedElectrode(obj)
+            id=char(obj.JFileLoadTree.getSelectedItem());
+            val=[];
+            if isempty(id)
+                return
+            end
+            
+            if regexp(id,'^Electrode')
+                val=str2double(id(10:end));
+                if isnan(val)
+                    val=[];
+                end
+            end
+        end
+        function val=get.SelectedSurface(obj)
+            id=char(obj.JFileLoadTree.getSelectedItem());
+            val=[];
+            if isempty(id)
+                return
+            end
+            
+            if regexp(id,'^Surface')
+                val=str2double(id(8:end));
+                if isnan(val)
+                    val=[];
+                end
+            end
+        end
+        function val=get.SelectedVolume(obj)
+            id=char(obj.JFileLoadTree.getSelectedItem());
+            val=[];
+            if isempty(id)
+                return
+            end
+            
+            if regexp(id,'^Volume')
+                val=str2double(id(7:end));
+                if isnan(val)
+                    val=[];
+                end
+            end
         end
         
         function val=get.cfg_name(obj)
@@ -199,7 +250,15 @@ classdef BrainMap < handle
         function val=get.brainmap_path(obj)
             [val,~,~]=fileparts(which('brainmap.m'));
         end
-        
+        function val=get.toolpane(obj)
+            if strcmpi(get(obj.volumetoolpane,'visible'),'on');
+                val=1;
+            elseif strcmpi(get(obj.surfacetoolpane,'visible'),'on');
+                val=2;
+            elseif strcmpi(get(obj.electrodetoolpane,'visible'),'on');
+                val=3;
+            end
+        end
         function val=get.valid(obj)
             try
                 val=ishandle(obj.fig)&&isvalid(obj.fig);
@@ -212,8 +271,6 @@ classdef BrainMap < handle
             obj.inView=[];
             
             obj.mapObj=containers.Map;
-            
-            obj.SelectEvt.category='Volume';
             
             obj.cmin=0;
             obj.cmax=1;
@@ -278,9 +335,10 @@ classdef BrainMap < handle
             position(1)=position(1)+figpos(1);
             position(2)=position(2)+figpos(2);
             f=figure('Name','Axis 3D','Position',position,'visible','on','color',get(obj.ViewPanel,'BackgroundColor'));
-            copyobj(obj.axis_3d,f);
+            newp=copyobj(obj.ViewPanel,f);
+            set(newp,'units','normalized','position',[0,0,1,1]);
             
-            colormap(colormap(obj.axis_3d));
+%             colormap(colormap(obj.axis_3d));
             set(obj.TextInfo,'String','Figure print complete !','FontSize',0.4,...
                 'Foregroundcolor',[12,60,38]/255,'HorizontalAlignment','center');
         end
@@ -330,16 +388,6 @@ classdef BrainMap < handle
             set(handle(obj.JLight,'CallbackProperties'),'MousePressedCallback',@(h,e) LightOffCallback(obj));
         end
         
-        
-        function DeleteSurface(obj)
-            
-        end
-        
-        function DeleteVolume(obj)
-        end
-        function DeleteElectrode(obj)
-        end
-        
         function NewElectrode(obj)
         end
         function NewSurface(obj)
@@ -375,7 +423,7 @@ classdef BrainMap < handle
         end
         
         function ChangeCanvasColor(obj)
-            col=uisetcolor(get(obj.ViewPanel,'BackgroundColor'),'Background');
+            col=uisetcolor(get(obj.View3DPanel,'BackgroundColor'),'Background');
             set(obj.View3DPanel,'BackgroundColor',col);
             set(obj.ViewSagittalPanel,'BackgroundColor',col);
             set(obj.ViewCoronalPanel,'BackgroundColor',col);
@@ -505,10 +553,10 @@ classdef BrainMap < handle
                 return
             end
             
-            side_h=600;
-            side_w=300;
-            
             pos=get(obj.fig,'position');
+            
+            side_h=max(pos(4)-100,600);
+            side_w=side_h/2;
             
             pos(3)=max(pos(3),side_w);
             pos(4)=max(pos(4),side_h);
@@ -524,6 +572,40 @@ classdef BrainMap < handle
         function saveConfig(obj)
             newcfg=obj.cfg;
             save(obj.cfg_name,'-struct','newcfg','-mat');
+        end
+        
+        function DeleteElectrode( obj )
+            if ~isempty(obj.SelectedElectrode)
+                electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+                delete(electrode.handles);
+                delete(electrode.map_h);
+            end
+            obj.JFileLoadTree.deleteSelectedNode();
+        end
+        function DeleteSurface( obj )
+            if ~isempty(obj.SelectedSurface)
+                surface=obj.mapObj(['Surface',num2str(obj.SelectedSurface)]);
+                delete(surface.handles);
+            end
+            obj.JFileLoadTree.deleteSelectedNode();
+        end
+        
+        
+        function DeleteVolume(obj)
+            if ~isempty(obj.SelectedVolume)
+                volume=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
+                delete(volume.handles);
+            end
+            obj.JFileLoadTree.deleteSelectedNode();
+        end
+        function ChangeInterface( obj,src )
+            if obj.JViewInterfaceVolumeMenu.isSelected()
+                obj.JFileLoadTree.clickVolume();
+            elseif obj.JViewInterfaceSurfaceMenu.isSelected()
+                obj.JFileLoadTree.clickSurface();
+            elseif obj.JViewInterfaceElectrodeMenu.isSelected()
+                obj.JFileLoadTree.clickElectrode();
+            end
         end
     end
     methods

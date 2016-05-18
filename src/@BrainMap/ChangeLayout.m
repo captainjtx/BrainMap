@@ -1,8 +1,8 @@
 function ChangeLayout(obj,src)
-if src.isSelected()
-    return
-end
-src.setSelected(true);
+% if src.isSelected()
+%     return
+% end
+% src.setSelected(true);
 
 [p,ind]=OrderedView(obj);
 

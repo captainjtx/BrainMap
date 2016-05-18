@@ -237,8 +237,11 @@ set(obj.fig,'WindowButtonMotionFcn',@(src,evt) MouseMove(obj));
 %%
 p2=[obj.JViewLayoutSagittalMenu,obj.JViewLayoutCoronalMenu,obj.JViewLayoutAxialMenu,obj.JViewLayout3DMenu];
 p1=[obj.JViewLayoutOneMenu,obj.JViewLayoutTwoTwoMenu,obj.JViewLayoutOneThreeHorizontalMenu,obj.JViewLayoutOneThreeVerticalMenu];
-ChangeLayout(obj,p1(obj.cfg.layout(1)));
-ChangeLayout(obj,p2(obj.cfg.layout(2)));
+p1(obj.cfg.layout(1)).setSelected(true);
+p2(obj.cfg.layout(2)).setSelected(true);
+
+p3=[obj.JViewInterfaceVolumeMenu,obj.JViewInterfaceSurfaceMenu,obj.JViewInterfaceElectrodeMenu];
+p3(obj.cfg.interface).setSelected(true);
 end
 %%
 function h=colormap_popup(varargin)

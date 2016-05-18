@@ -1,5 +1,11 @@
 function TreeSelectionCallback(obj,src,evt)
-if ~strcmpi(obj.SelectEvt.category,evt.category)
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+is_pc=ispc;
+is_mac=ismac;
+
+if ~strcmp(evt.oldcategory,evt.category)
     if strcmpi(evt.category,'Volume')
         obj.JLoadBtn.setIcon(obj.IconLoadVolume);
         obj.JLoadBtn.setToolTipText('Load volume');
@@ -29,6 +35,18 @@ if ~strcmpi(obj.SelectEvt.category,evt.category)
         set(obj.volumetoolpane,'visible','on');
         set(obj.surfacetoolpane,'visible','off');
         set(obj.electrodetoolpane,'visible','off');
+        
+        obj.JLoadSurfaceMenu.setAccelerator([]);
+        obj.JLoadElectrodeMenu.setAccelerator([]);
+        if is_pc
+            obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
+            
+        elseif is_mac
+            obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+        end
+        
+        obj.cfg.interface=1;
+
     elseif strcmpi(evt.category,'Surface')
         obj.JLoadBtn.setIcon(obj.IconLoadSurface);
         obj.JLoadBtn.setToolTipText('Load surface');
@@ -61,6 +79,16 @@ if ~strcmpi(obj.SelectEvt.category,evt.category)
             obj.JSurfaceAlphaSpinner.setValue(round(alpha*100));
             obj.JSurfaceAlphaSlider.setValue(round(alpha*100));
         end
+        
+        obj.JLoadVolumeMenu.setAccelerator([]);
+        obj.JLoadElectrodeMenu.setAccelerator([]);
+        if is_pc
+            obj.JLoadSurfaceMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
+            
+        elseif is_mac
+            obj.JLoadSurfaceMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+        end
+        obj.cfg.interface=2;
     elseif strcmpi(evt.category,'Electrode')
         obj.JLoadBtn.setIcon(obj.IconLoadElectrode);
         obj.JLoadBtn.setToolTipText('Load electrode');
@@ -90,6 +118,16 @@ if ~strcmpi(obj.SelectEvt.category,evt.category)
         set(obj.volumetoolpane,'visible','off');
         set(obj.surfacetoolpane,'visible','off');
         set(obj.electrodetoolpane,'visible','on');
+        
+        obj.JLoadSurfaceMenu.setAccelerator([]);
+        obj.JLoadVolumeMenu.setAccelerator([]);
+        if is_pc
+            obj.JLoadElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
+            
+        elseif is_mac
+            obj.JLoadElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+        end
+        obj.cfg.interface=3;
     elseif strcmpi(evt.category,'Others')
         
     end
@@ -100,26 +138,24 @@ if strcmpi(evt.category,'Electrode')&&evt.level==2
     electrode.selected=ones(size(electrode.coor,1),1)*true;
     set(electrode.handles,'edgecolor','y');
     obj.mapObj(char(evt.getKey()))=electrode;
-    obj.SelectedElectrode=electrode.ind;
     
     if electrode.ind==obj.electrode_settings.select_ele
         notify(obj,'ElectrodeSettingsChange')
     end
 else
-    if strcmpi(obj.SelectEvt.category,'Electrode')&&obj.SelectEvt.level==2
-        electrode=obj.mapObj(char(obj.SelectEvt.getKey()));
-        electrode.selected=ones(size(electrode.coor,1),1)*false;
-        set(electrode.handles,'edgecolor','none');
-        obj.mapObj(char(obj.SelectEvt.getKey()))=electrode;
-        obj.SelectedElectrode=[];
+    if strcmpi(evt.oldcategory,'Electrode')&&evt.oldind~=0
+        oldelectrode=obj.mapObj([char(evt.oldcategory),num2str(evt.oldind)]);
+        oldelectrode.selected=ones(size(oldelectrode.coor,1),1)*false;
+        try
+            set(oldelectrode.handles,'edgecolor','none');
+        catch
+        end
+        obj.mapObj([char(evt.oldcategory),num2str(evt.oldind)])=oldelectrode;
         
-        if electrode.ind==obj.electrode_settings.select_ele
+        if oldelectrode.ind==obj.electrode_settings.select_ele
             notify(obj,'ElectrodeSettingsChange')
         end
     end
 end
-
-
-obj.SelectEvt=evt;
 
 end
