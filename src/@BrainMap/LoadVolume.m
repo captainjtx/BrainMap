@@ -18,9 +18,7 @@ if obj.mapObj.isKey(fpath)
     return
 end
 
-set(obj.TextInfo,'String','Loading volume ...','FontSize',0.4,...
-    'Foregroundcolor','r','HorizontalAlignment','center');
-drawnow
+obj.NotifyTaskStart('Loading volume ...');
             
 if strcmp(ext,'.nii')
     out= MRIread(fpath);
@@ -112,7 +110,6 @@ obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 material dull
 
-set(obj.TextInfo,'String','Volume load complete !','FontSize',0.4,...
-                'Foregroundcolor',[12,60,38]/255,'HorizontalAlignment','center');
+obj.NotifyTaskEnd('Volume load complete !');
 end
 

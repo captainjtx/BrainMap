@@ -27,6 +27,25 @@ classdef Electrode
         function obj=Electrode()
             obj.category='Electrode';
         end
+        
+        function save(obj)
+            [FileName,FilePath,~]=uiputfile({'*.mat','Matlab Mat File (*.mat)'}...
+                ,'save your electrode',obj.file);
+            
+            if FileName~=0
+                mapval.category='Electrode';
+                mapval.file=fullfile(FilePath,FileName);
+                mapval.coor=obj.coor;
+                mapval.radius=obj.radius;
+                mapval.thickness=obj.thickness;
+                mapval.color=obj.color;
+                mapval.norm=obj.norm;
+                mapval.channame=obj.channame;
+                mapval.map=obj.map;
+                save(fullfile(FilePath,FileName),'-struct','mapval','-mat','-v7.3');
+            end
+            
+        end
     end
     
 end

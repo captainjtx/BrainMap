@@ -2,23 +2,30 @@ function MouseDown_View(obj)
 
 currp=get(obj.axis_3d,'CurrentPoint');
 currp=currp(1,:)';
-
-if strcmpi(get(obj.axis_3d,'Projection'),'orthographic')&&strcmpi(get(obj.fig,'renderer'),'opengl')
-    opt=1;
-elseif strcmpi(get(obj.axis_3d,'Projection'),'perspective')&&strcmpi(get(obj.fig,'renderer'),'opengl')
-    opt=2;
-else
-    %painter renderer
-    opt=3;
-end                    
+                
                     
 if obj.JTogNewElectrode.isSelected()
+    obj.NotifyTaskStart('Adding electrode ...');
+    
     origin=camtarget(obj.axis_3d);
     origin=origin(:);
     
     eye=campos(obj.axis_3d);
     eye=eye(:);
     
+    new_radius=obj.JElectrodeRadiusSpinner.getValue();
+    new_thickness=obj.JElectrodeThicknessSpinner.getValue();
+    
+    if strcmpi(get(obj.axis_3d,'Projection'),'orthographic')&&strcmpi(get(obj.fig,'renderer'),'opengl')
+        opt=1;
+        projV=(origin-eye)/norm(origin-eye);
+    elseif strcmpi(get(obj.axis_3d,'Projection'),'perspective')&&strcmpi(get(obj.fig,'renderer'),'opengl')
+        opt=2;
+    else
+        %painter renderer
+        opt=3;
+        projV=(origin-eye)/norm(origin-eye);
+    end
     allkeys=keys(obj.mapObj);
     is_vol=regexp(allkeys,'^Volume');
     
@@ -46,12 +53,14 @@ if obj.JTogNewElectrode.isSelected()
                     switch opt
                         case 1
                             p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
+                            p0=p0-projV*new_thickness;
                         case 2
                             p0=intersection(p1,p2,p3,eye,currp);
+                            p0=p0+(eye-currp)/norm(eye-currp)*new_thickness;
                         case 3
                             p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
-                    end
-                            
+                            p0=p0-projV*new_thickness;
+                    end  
                     
                     p0_i=round(dot(p0-p1,(p3-p1)/norm(p3-p1))/sqrt((p3-p1)'*(p3-p1))*size(alpha,1));
                     p0_j=round(dot(p0-p1,(p2-p1)/norm(p2-p1))/sqrt((p2-p1)'*(p2-p1))*size(alpha,2));
@@ -74,10 +83,6 @@ if obj.JTogNewElectrode.isSelected()
     tmpv=interp-repmat(eye',size(interp,1),1);
     [~,ind]=min(sum(tmpv.^2,2));
     new_coor=interp(ind,:);
-    
-    new_radius=obj.JElectrodeRadiusSpinner.getValue();
-    new_thickness=obj.JElectrodeThicknessSpinner.getValue();
-    origin=camtarget(obj.axis_3d);
     new_norm=origin(:)'-new_coor;
     %%
     if isempty(obj.SelectedElectrode)
@@ -106,7 +111,7 @@ if obj.JTogNewElectrode.isSelected()
         electrode.map=nan;
     else
         electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
-        new_channame=num2str(size(electrode.coor,1));
+        new_channame=num2str(size(electrode.coor,1)+1);
         
         electrode.coor=cat(1,electrode.coor,new_coor);
         electrode.norm=cat(1,electrode.norm,new_norm);
@@ -140,6 +145,8 @@ if obj.JTogNewElectrode.isSelected()
     end
     
     material dull;
+    
+    obj.NotifyTaskEnd('Electrode added !');
 else
     obj.loc = get(obj.fig,'CurrentPoint');    % get starting point
     start(obj.RotateTimer);

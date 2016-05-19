@@ -322,13 +322,11 @@ classdef BrainMap < handle
         function Scroll_View(obj,src,evt)
             vt=-evt.VerticalScrollCount;
             factor=1.05^vt;
-            camzoom(factor);
+            camzoom(obj.axis_3d,factor);
         end
         
         function SaveAsFigure(obj)
-            set(obj.TextInfo,'String','Printing figure ...','FontSize',0.4,...
-                'Foregroundcolor','r','HorizontalAlignment','center');
-            drawnow
+            obj.NotifyTaskStart('Printing figure ...')
             
             position=getpixelposition(obj.ViewPanel);
             figpos=get(obj.fig,'position');
@@ -337,24 +335,34 @@ classdef BrainMap < handle
             f=figure('Name','Axis 3D','Position',position,'visible','on','color',get(obj.ViewPanel,'BackgroundColor'));
             newp=copyobj(obj.ViewPanel,f);
             set(newp,'units','normalized','position',[0,0,1,1]);
-            
-%             colormap(colormap(obj.axis_3d));
-            set(obj.TextInfo,'String','Figure print complete !','FontSize',0.4,...
-                'Foregroundcolor',[12,60,38]/255,'HorizontalAlignment','center');
+
+            obj.NotifyTaskEnd('Figure print complete !');
         end
         
+        function NotifyTaskStart(obj,str)
+            set(obj.TextInfo,'String',str,'fontunits','normalized','fontsize',0.4,...
+                'ForegroundColor','r','HorizontalAlignment','center');
+            drawnow
+        end
+        function NotifyTaskEnd(obj,str)
+            set(obj.TextInfo,'String',str,'fontunits','normalized','fontsize',0.4,...
+                'ForegroundColor',[12,60,38]/255,'HorizontalAlignment','center');
+            drawnow
+        end
         function RecenterCallback(obj)
-            view(3);
-            if ~isempty(obj.light)
-                obj.light = camlight(obj.light,'headlight');        % adjust light
+            obj.NotifyTaskStart('Refreshing axis ...');
+            if ~isempty(obj.SelectedVolume)
+                vol=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
+                [center,~]=getVolumeCenter(vol.volume,vol.xrange,vol.yrange,vol.zrange);
+                camtarget(obj.axis_3d,center);
+            else
+                camtarget(obj.axis_3d,'auto');
             end
-            set(obj.axis_3d,'CameraViewAngle',10);
+            obj.NotifyTaskEnd('Axis refresh complete !');
         end
         
         function CheckChangedCallback(obj,src,evt)
-            set(obj.TextInfo,'String','Refreshing axis ...','fontsize',0.4,...
-                'ForegroundColor','r','HorizontalAlignment','center');
-            drawnow
+            obj.NotifyTaskStart('Add/Remove objects from axis ...');
             mapval=obj.mapObj(char(evt.getKey()));
             if evt.ischecked
                 set(mapval.handles,'visible','on');
@@ -367,10 +375,7 @@ classdef BrainMap < handle
             if mapval.ind==obj.electrode_settings.select_ele
                 notify(obj,'ElectrodeSettingsChange')
             end
-            set(obj.TextInfo,'String','Axis refresh complete !','fontsize',0.4,...
-                'ForegroundColor',[12,60,38]/255,'HorizontalAlignment','center');
-            %             disp(evt.filename)
-            %             disp(evt.ischecked)
+            obj.NotifyTaskEnd('Add/Remove objects complete !');
         end
         
         function LightOffCallback(obj)
@@ -607,6 +612,15 @@ classdef BrainMap < handle
                 obj.JFileLoadTree.clickElectrode();
             end
         end
+        function SaveElectrode(obj)
+            ele=obj.SelectedElectrode;
+            if ~isempty(ele)
+                electrode=obj.mapObj(['Electrode',num2str(ele)]);
+                electrode.save();
+            end
+        end
+
+
     end
     methods
         LoadSurface(obj)
@@ -615,7 +629,6 @@ classdef BrainMap < handle
         BuildIOBar(obj)
         BuildFig(obj)
         TreeSelectionCallback(obj,src,evt)
-        SaveElectrode(obj)
         ElectrodeInterpolateCallback(obj)
         LoadMap(obj)
         MapColormapCallback(obj)

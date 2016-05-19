@@ -10,11 +10,10 @@ if obj.mapObj.isKey(fpath)
     return
 end
 
+obj.NotifyTaskStart('Loading surface ...');
+
 [~,~,type]=fileparts(fpath);
 
-
-
-%set(handles.info,'string','Loading...');
 if strcmp(type, '.mat')
     dat=load(fpath);
 
@@ -64,5 +63,7 @@ mapval.checked=true;
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 material dull
+
+obj.NotifyTaskEnd('Surface load complete !');
 end
 

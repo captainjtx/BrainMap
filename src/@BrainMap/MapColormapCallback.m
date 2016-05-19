@@ -1,4 +1,5 @@
 function MapColormapCallback( obj )
+obj.NotifyTaskStart('Refreshing map ...');
 if ~isempty(obj.SelectedElectrode)
     electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
     
@@ -33,6 +34,8 @@ if ~isempty(obj.SelectedElectrode)
     
     obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
 end
+
+obj.NotifyTaskEnd('Map refresh complete !');
 
 end
 

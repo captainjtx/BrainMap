@@ -1,8 +1,6 @@
 function VolumeSmoothSpinnerCallback(obj)
+obj.NotifyTaskStart('Smoothing volume ...');
 obj.smooth_sigma=obj.JVolumeSmoothSpinner.getValue();
-
-set(obj.TextInfo,'String','Smoothing the volume ...','FontSize',0.4,'Foregroundcolor','r','HorizontalAlignment','center');
-drawnow
 
 allkeys=keys(obj.mapObj);
 is_vol=regexp(allkeys,'^Volume');
@@ -31,6 +29,6 @@ for i=1:length(is_vol)
     end
 end
 
-set(obj.TextInfo,'String',{'Volume smooth complete !'},'FontSize',0.4,'foregroundcolor',[12,60,38]/255,'HorizontalAlignment','center');
+obj.NotifyTaskEnd('Volume smooth complete !');
 end
 
