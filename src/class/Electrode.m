@@ -1,4 +1,4 @@
-classdef Electrode
+classdef Electrode<handle
     %Include properties for map and electrode
     properties
         category% must be electrode all the time, will eliminate in future
@@ -45,6 +45,30 @@ classdef Electrode
                 save(fullfile(FilePath,FileName),'-struct','mapval','-mat','-v7.3');
             end
             
+        end
+        
+        function remove(obj,ind)
+            obj.coor(ind,:)=[];
+            obj.radius(ind)=[];
+            obj.thickness(ind)=[];
+            obj.color(ind,:)=[];
+            if ~isempty(obj.norm)
+                obj.norm(ind,:)=[];
+            end
+            if ~isempty(obj.selected)
+                obj.selected(ind)=[];
+            end
+            if ~isempty(obj.map)
+                obj.map(ind)=[];
+            end
+            
+            if ~isempty(obj.handles)
+                try
+                delete(obj.handles(ind));
+                catch
+                end
+                obj.handles(ind)=[];
+            end
         end
     end
     

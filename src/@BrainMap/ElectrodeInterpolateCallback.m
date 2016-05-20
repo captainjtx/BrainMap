@@ -9,8 +9,8 @@ if ~isempty(obj.SelectedElectrode)
     coor=mean(coor,1);
     
     norm=mean(electrode.norm(ind,:),1);
-    radius=mean(electrode.radius(ind));
-    thickness=mean(electrode.thickness(ind));
+    radius=obj.JElectrodeRadiusSpinner.getValue();
+    thickness=obj.JElectrodeThicknessSpinner.getValue();
     color=mean(electrode.color(ind,:),1);
     
     prompt={'ChannelName','Position','Norm vector','Radius','Thickness','Color'};
@@ -41,12 +41,13 @@ if ~isempty(obj.SelectedElectrode)
         electrode.selected(end)=true;
         
         electrode.channame=cat(1,electrode.channame(:),new_channame);
+        electrode.map=cat(1,electrode.map,nan);
         
         [faces,vertices] = createContact3D(new_coor,new_norm,new_radius,new_thickness);
         
         userdat.name=new_channame;
         userdat.ele=electrode.ind;
-        new_h=patch('faces',faces,'vertices',vertices,...
+        new_h=patch(obj.axis_3d,'faces',faces,'vertices',vertices,...
         'facecolor',new_color,'edgecolor','y','UserData',userdat,...
         'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
         set(electrode.handles,'edgecolor','none');

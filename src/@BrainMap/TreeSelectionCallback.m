@@ -38,11 +38,14 @@ if ~strcmp(evt.oldcategory,evt.category)
         
         obj.JLoadSurfaceMenu.setAccelerator([]);
         obj.JLoadElectrodeMenu.setAccelerator([]);
+        obj.JSaveAsSurfaceMenu.setAccelerator([]);
+        obj.JSaveAsElectrodeMenu.setAccelerator([]);
         if is_pc
             obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
-            
+            obj.JSaveAsVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.CTRL_MASK)));
         elseif is_mac
             obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+            obj.JSaveAsVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.META_MASK)));
         end
         
         obj.cfg.interface=1;
@@ -82,11 +85,15 @@ if ~strcmp(evt.oldcategory,evt.category)
         
         obj.JLoadVolumeMenu.setAccelerator([]);
         obj.JLoadElectrodeMenu.setAccelerator([]);
+        obj.JSaveAsVolumeMenu.setAccelerator([]);
+        obj.JSaveAsElectrodeMenu.setAccelerator([]);
         if is_pc
             obj.JLoadSurfaceMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
+            obj.JSaveAsSurfaceMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.CTRL_MASK)));
             
         elseif is_mac
             obj.JLoadSurfaceMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+            obj.JSaveAsSurfaceMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.META_MASK)));
         end
         obj.cfg.interface=2;
     elseif strcmpi(evt.category,'Electrode')
@@ -113,7 +120,8 @@ if ~strcmp(evt.oldcategory,evt.category)
         set(handle(obj.JNewBtn,'CallbackProperties'),'MousePressedCallback',@(h,e) NewElectrode(obj));
         set(handle(obj.JSaveBtn,'CallbackProperties'),'MousePressedCallback',@(h,e) SaveElectrode(obj));
         set(handle(obj.JSettingsBtn,'CallbackProperties'),'MousePressedCallback',@(h,e) ElectrodeSettingsCallback(obj));
-        set(handle(obj.JExtraBtn1,'CallbackProperties'),'MousePressedCallback',@(h,e) VolumeRenderCallback(obj));
+        set(handle(obj.JExtraBtn1,'CallbackProperties'),'MousePressedCallback',@(h,e) ElectrodeInterpolateCallback(obj));
+        set(handle(obj.JExtraBtn2,'CallbackProperties'),'MousePressedCallback',@(h,e) LoadMap(obj));
         
         set(obj.volumetoolpane,'visible','off');
         set(obj.surfacetoolpane,'visible','off');
@@ -121,11 +129,14 @@ if ~strcmp(evt.oldcategory,evt.category)
         
         obj.JLoadSurfaceMenu.setAccelerator([]);
         obj.JLoadVolumeMenu.setAccelerator([]);
+        obj.JSaveAsSurfaceMenu.setAccelerator([]);
+        obj.JSaveAsVolumeMenu.setAccelerator([]);
         if is_pc
             obj.JLoadElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
-            
+            obj.JSaveAsElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.CTRL_MASK)));
         elseif is_mac
             obj.JLoadElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
+            obj.JSaveAsElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.META_MASK)));
         end
         obj.cfg.interface=3;
     elseif strcmpi(evt.category,'Others')

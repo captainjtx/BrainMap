@@ -1,4 +1,4 @@
-function  new_coor= perspectiveRotate(coor,origin,viewpos,ud,lr)
+function  new_coor= perspectiveRotate(a,coor,ud,lr)
 %Rotate V with respect to the perspective vector Vp
 %ud, rad of up and down rotation, postive is up, negative is down
 %lr, degree of left and right rotation, positive is right, negative is left
@@ -9,19 +9,25 @@ function  new_coor= perspectiveRotate(coor,origin,viewpos,ud,lr)
 %By Tianxiao Jiang
 %Apr-15-2016
 
-center=mean(coor,1);
-
+viewpos=camtarget(a);
+origin=campos(a);
+Vup=camup(a);
 Vp=viewpos-origin;
+Vr=cross(Vup,Vp);
+
+center=mean(coor,1);
 V=center-origin;
-R1=rot(Vp,lr);
+
+
+R1=rot(Vup,-lr);
 V=V(:);
-Vr=R1*V;
-Vt=cross(Vp,V);
+Vtmp=R1*V;
 
-R2=rot(Vt,ud);
-Vr=R2*Vr;
+R2=rot(Vr,-ud);
 
-new_coor=coor-ones(size(coor,1),1)*center+ones(size(coor,1),1)*(Vr'+origin);
+V=R2*Vtmp;
+
+new_coor=coor-ones(size(coor,1),1)*center+ones(size(coor,1),1)*(V'+origin);
 
 end
 

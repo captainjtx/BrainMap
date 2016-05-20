@@ -1,6 +1,7 @@
 function BuildToolbar( obj )
 import src.java.PushButton;
 import src.java.TogButton;
+import javax.swing.ButtonGroup;
 
 obj.Toolbar=uitoolbar(obj.fig);
 drawnow
@@ -27,11 +28,21 @@ set(handle(obj.JCanvasColor,'CallbackProperties'),'MousePressedCallback',@(src,e
 obj.JToolbar(1).add(obj.JCanvasColor);
 
 obj.JToolbar(1).addSeparator();
+obj.JTogNavigation=javaObjectEDT(TogButton([obj.brainmap_path,'/db/icon/arrow.png'],btn_d,char('Navigation'),col));
+obj.JToolbar(1).add(obj.JTogNavigation);
 
-obj.JTogNewElectrode=javaObjectEDT(TogButton([obj.brainmap_path,'/db/icon/new_ele.png'],btn_d,char('New electrode (ctrl i)'),col));
-% set(handle(obj.JTogNewElectrode,'CallbackProperties'),'MousePressedCallback',@(h,e) ChangeMouseMode(obj,1));
-obj.JToolbar(1).add(obj.JTogNewElectrode);
 obj.JToolbar(1).addSeparator();
+obj.JTogNewElectrode=javaObjectEDT(TogButton([obj.brainmap_path,'/db/icon/new_ele.png'],btn_d,char('New electrode'),col));
+obj.JToolbar(1).add(obj.JTogNewElectrode);
+
+obj.JTogPickElectrode=javaObjectEDT(TogButton([obj.brainmap_path,'/db/icon/pick_ele.png'],btn_d,char('Pick electrode ctrl+e'),col));
+obj.JToolbar(1).add(obj.JTogPickElectrode);
+obj.JToolbar(1).addSeparator();
+
+group=javaObjectEDT(ButtonGroup());
+group.add(obj.JTogNavigation);
+group.add(obj.JTogNewElectrode);
+group.add(obj.JTogPickElectrode);
 
 obj.JToolbar(1).repaint;
 obj.JToolbar(1).revalidate;

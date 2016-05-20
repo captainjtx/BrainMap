@@ -2,30 +2,26 @@ function MouseDown_View(obj)
 
 currp=get(obj.axis_3d,'CurrentPoint');
 currp=currp(1,:)';
-                
-                    
+
+if strcmpi(get(obj.axis_3d,'Projection'),'orthographic')&&strcmpi(get(obj.fig,'renderer'),'opengl')
+    opt=1;
+elseif strcmpi(get(obj.axis_3d,'Projection'),'perspective')&&strcmpi(get(obj.fig,'renderer'),'opengl')
+    opt=2;
+else
+    %painter renderer
+    opt=3;
+end
+
+origin=camtarget(obj.axis_3d);
+origin=origin(:);
+
+eye=campos(obj.axis_3d);
+eye=eye(:);
 if obj.JTogNewElectrode.isSelected()
     obj.NotifyTaskStart('Adding electrode ...');
     
-    origin=camtarget(obj.axis_3d);
-    origin=origin(:);
-    
-    eye=campos(obj.axis_3d);
-    eye=eye(:);
-    
     new_radius=obj.JElectrodeRadiusSpinner.getValue();
     new_thickness=obj.JElectrodeThicknessSpinner.getValue();
-    
-    if strcmpi(get(obj.axis_3d,'Projection'),'orthographic')&&strcmpi(get(obj.fig,'renderer'),'opengl')
-        opt=1;
-        projV=(origin-eye)/norm(origin-eye);
-    elseif strcmpi(get(obj.axis_3d,'Projection'),'perspective')&&strcmpi(get(obj.fig,'renderer'),'opengl')
-        opt=2;
-    else
-        %painter renderer
-        opt=3;
-        projV=(origin-eye)/norm(origin-eye);
-    end
     allkeys=keys(obj.mapObj);
     is_vol=regexp(allkeys,'^Volume');
     
@@ -53,14 +49,12 @@ if obj.JTogNewElectrode.isSelected()
                     switch opt
                         case 1
                             p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
-                            p0=p0-projV*new_thickness;
                         case 2
                             p0=intersection(p1,p2,p3,eye,currp);
-                            p0=p0+(eye-currp)/norm(eye-currp)*new_thickness;
                         case 3
                             p0=intersection(p1,p2,p3,currp+(origin-eye),currp);
-                            p0=p0-projV*new_thickness;
-                    end  
+                    end
+                    p0=p0+(p0-origin)/norm(p0-origin)*new_thickness/2;
                     
                     p0_i=round(dot(p0-p1,(p3-p1)/norm(p3-p1))/sqrt((p3-p1)'*(p3-p1))*size(alpha,1));
                     p0_j=round(dot(p0-p1,(p2-p1)/norm(p2-p1))/sqrt((p2-p1)'*(p2-p1))*size(alpha,2));
@@ -76,8 +70,6 @@ if obj.JTogNewElectrode.isSelected()
     if ~vol_flag
         return
     end
-    
-    
     %find the closeset one to the camera position
     %%
     tmpv=interp-repmat(eye',size(interp,1),1);
@@ -132,7 +124,7 @@ if obj.JTogNewElectrode.isSelected()
     userdat.name=new_channame;
     userdat.ele=electrode.ind;
     
-    new_h=patch('faces',faces,'vertices',vertices,...
+    new_h=patch(obj.axis_3d,'faces',faces,'vertices',vertices,...
         'facecolor',obj.ecolor,'edgecolor','y','UserData',userdat,...
         'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
     set(electrode.handles,'edgecolor','none');
@@ -147,6 +139,47 @@ if obj.JTogNewElectrode.isSelected()
     material dull;
     
     obj.NotifyTaskEnd('Electrode added !');
+elseif obj.JTogPickElectrode.isSelected()
+    %%
+    %try to pick the electrode
+    allkeys=keys(obj.mapObj);
+    is_ele=regexp(allkeys,'^Electrode');
+    
+    interp=[];
+    interph=[];
+    
+    Q1=currp;
+    Q2=currp+(origin-eye);
+    n12=norm(Q1-Q2);
+    Q12=(Q1-Q2)/n12;
+                    
+    for i=1:length(is_ele)
+        if ~isempty(is_ele{i})
+            electrode=obj.mapObj(allkeys{i});
+            if ~isempty(electrode.checked)
+                for e=1:length(electrode.handles)
+                    patchObj=electrode.handles(e);
+                    dat=get(patchObj,'UserData');
+                    
+                    datind=strcmp(dat.name,electrode.channame);
+                    
+                    P=electrode.coor(datind,:)';
+                    d=sqrt((P-Q2)'*(P-Q2)-((P-Q2)'*Q12)^2);
+                    
+                    interp=cat(1,interp,d);
+                    interph=cat(1,interph,patchObj);
+                    
+                end
+            end
+        end
+    end
+    if isempty(interp)
+        return
+    end
+    %find the closeset one to the camera position
+    %%
+    [~,ind]=min(interp);
+    ClickOnElectrode(obj,interph(ind),[]);
 else
     obj.loc = get(obj.fig,'CurrentPoint');    % get starting point
     start(obj.RotateTimer);

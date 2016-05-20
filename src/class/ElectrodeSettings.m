@@ -207,6 +207,14 @@ classdef ElectrodeSettings<handle
         function newElectrode(obj)
         end
         function deleteElectrode(obj)
+            electrode=obj.bm.mapObj(obj.ele_key);
+            ind=logical(electrode.selected);
+            
+            electrode.remove(ind);
+            
+            obj.Data(logical(electrode.selected),:)=[];
+            
+            obj.bm.mapObj(obj.ele_key)=electrode;
         end
         
         function updateData(obj)

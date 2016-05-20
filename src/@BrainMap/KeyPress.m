@@ -1,22 +1,21 @@
 function KeyPress(obj,src,evt)
 %**************************************************************************
 %Exit the special channel selection mode
-tp=obj.toolpane;
 
 if isempty(evt.Modifier)
     if strcmpi(evt.Key,'escape')
-        obj.JTogNewElectrode.setSelected(false);
+        obj.JTogNavigation.setSelected(true);
         set(obj.fig,'pointer','arrow');
         return
     end
 elseif length(evt.Modifier)==1
     if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
-        
+        if strcmpi(evt.Key,'E')
+            obj.JTogPickElectrode.setSelected(true);
+        end
     elseif ismember('alt',evt.Modifier)
     end
 end
-
-
 %**************************************************************************
 
 if ~isempty(obj.SelectedElectrode)
@@ -28,19 +27,19 @@ if ~isempty(obj.SelectedElectrode)
     if isempty(evt.Modifier)
         if strcmpi(evt.Key,'leftarrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),0,0.05);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.002);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'rightarrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),0,-0.05);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.002);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'uparrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),0.05,0);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.002,0);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'downarrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),-0.05,0);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.002,0);
             redraw_electrode=true;
         end
     else
@@ -63,19 +62,19 @@ if ~isempty(obj.SelectedElectrode)
             elseif ismember('shift',evt.Modifier)
                 if strcmpi(evt.Key,'leftarrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),0,0.01);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.0004);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'rightarrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),0,-0.01);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.0004);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'uparrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),0.01,0);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.0004,0);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'downarrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),campos(obj.axis_3d),-0.01,0);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.0004,0);
                     redraw_electrode=true;
                 end
             end
@@ -110,7 +109,7 @@ if ~isempty(obj.SelectedElectrode)
             [faces,vertices] = createContact3D(electrode.coor(ind(i),:),electrode.norm(ind(i),:),electrode.radius(ind(i)),electrode.thickness(ind(i)));
             
             delete(electrode.handles(ind(i)));
-            electrode.handles(ind(i))=patch('faces',faces,'vertices',vertices,...
+            electrode.handles(ind(i))=patch(obj.axis_3d,'faces',faces,'vertices',vertices,...
                 'facecolor',electrode.color(ind(i),:),'edgecolor','y','UserData',userdat,...
                 'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
         end

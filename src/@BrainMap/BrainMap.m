@@ -29,6 +29,9 @@ classdef BrainMap < handle
         JLoadElectrodeMenu
         
         JSaveAsMenu
+        JSaveAsVolumeMenu
+        JSaveAsSurfaceMenu
+        JSaveAsElectrodeMenu
         JSaveAsFigureMenu
         
         SettingsMenu
@@ -81,7 +84,9 @@ classdef BrainMap < handle
         
         JRecenter
         
+        JTogNavigation
         JTogNewElectrode
+        JTogPickElectrode
         
         JFileLoadTree
         JLight
@@ -341,7 +346,7 @@ classdef BrainMap < handle
         
         function NotifyTaskStart(obj,str)
             set(obj.TextInfo,'String',str,'fontunits','normalized','fontsize',0.4,...
-                'ForegroundColor','r','HorizontalAlignment','center');
+                'ForegroundColor',[12,60,38]/255,'HorizontalAlignment','center');
             drawnow
         end
         function NotifyTaskEnd(obj,str)
@@ -350,7 +355,7 @@ classdef BrainMap < handle
             drawnow
         end
         function RecenterCallback(obj)
-            obj.NotifyTaskStart('Refreshing axis ...');
+            obj.NotifyTaskStart('Reset origin ...');
             if ~isempty(obj.SelectedVolume)
                 vol=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
                 [center,~]=getVolumeCenter(vol.volume,vol.xrange,vol.yrange,vol.zrange);
@@ -358,7 +363,7 @@ classdef BrainMap < handle
             else
                 camtarget(obj.axis_3d,'auto');
             end
-            obj.NotifyTaskEnd('Axis refresh complete !');
+            obj.NotifyTaskEnd('Origin reset complete !');
         end
         
         function CheckChangedCallback(obj,src,evt)
@@ -491,7 +496,6 @@ classdef BrainMap < handle
             set(electrode.handles(logical(electrode.selected)),'edgecolor','y');
             
             obj.mapObj(['Electrode',num2str(dat.ele)])=electrode;
-            obj.SelectedElectrode=dat.ele;
             
             if electrode.ind==obj.electrode_settings.select_ele
                 notify(obj,'ElectrodeSettingsChange')
@@ -584,15 +588,17 @@ classdef BrainMap < handle
                 electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
                 delete(electrode.handles);
                 delete(electrode.map_h);
+                remove(obj.mapObj,['Electrode',num2str(obj.SelectedElectrode)]);
+                obj.JFileLoadTree.deleteSelectedNode();
             end
-            obj.JFileLoadTree.deleteSelectedNode();
+            
         end
         function DeleteSurface( obj )
             if ~isempty(obj.SelectedSurface)
                 surface=obj.mapObj(['Surface',num2str(obj.SelectedSurface)]);
                 delete(surface.handles);
+                obj.JFileLoadTree.deleteSelectedNode();
             end
-            obj.JFileLoadTree.deleteSelectedNode();
         end
         
         
@@ -600,8 +606,8 @@ classdef BrainMap < handle
             if ~isempty(obj.SelectedVolume)
                 volume=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
                 delete(volume.handles);
+                obj.JFileLoadTree.deleteSelectedNode();
             end
-            obj.JFileLoadTree.deleteSelectedNode();
         end
         function ChangeInterface( obj,src )
             if obj.JViewInterfaceVolumeMenu.isSelected()
@@ -641,7 +647,6 @@ classdef BrainMap < handle
         ElectrodeRadiusRatioSpinnerCallback(obj)
         MoveElectrode(obj,opt)
         VolumeSmoothSpinnerCallback(obj)
-        ChangeMouseMode(obj,opt)
         MouseMove(obj)
         KeyPress(obj,src,evt)
         MouseDown_View(obj)

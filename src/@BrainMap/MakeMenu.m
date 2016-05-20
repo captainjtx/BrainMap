@@ -36,18 +36,18 @@ obj.JFileMenu=javaObjectEDT(JMenu('File'));
 obj.JLoadMenu=javaObjectEDT(JMenu('Load'));
 obj.JLoadVolumeMenu=javaObjectEDT(JMenuItem('Volume',ImageIcon([obj.brainmap_path,'/db/icon/volume.png'])));
 set(handle(obj.JLoadVolumeMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) LoadVolume(obj));
-if is_pc
-    obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.CTRL_MASK)));
-elseif is_mac
-    obj.JLoadVolumeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_O,ActionEvent.META_MASK)));
-end
-
 obj.JLoadSurfaceMenu=javaObjectEDT(JMenuItem('Surface',ImageIcon([obj.brainmap_path,'/db/icon/surface.png'])));
 set(handle(obj.JLoadSurfaceMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) LoadSurface(obj));
 obj.JLoadElectrodeMenu=javaObjectEDT(JMenuItem('Electrode',ImageIcon([obj.brainmap_path,'/db/icon/ecog.png'])));
 set(handle(obj.JLoadElectrodeMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) LoadElectrode(obj));
 
 obj.JSaveAsMenu=javaObjectEDT(JMenu('Save as'));
+obj.JSaveAsVolumeMenu=javaObjectEDT(JMenuItem('Volume',ImageIcon([obj.brainmap_path,'/db/icon/volume.png'])));
+set(handle(obj.JSaveAsVolumeMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) SaveVolume(obj));
+obj.JSaveAsSurfaceMenu=javaObjectEDT(JMenuItem('Surface',ImageIcon([obj.brainmap_path,'/db/icon/surface.png'])));
+set(handle(obj.JSaveAsSurfaceMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) SaveSurface(obj));
+obj.JSaveAsElectrodeMenu=javaObjectEDT(JMenuItem('Electrode',ImageIcon([obj.brainmap_path,'/db/icon/ecog.png'])));
+set(handle(obj.JSaveAsElectrodeMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) SaveElectrode(obj));
 obj.JSaveAsFigureMenu=javaObjectEDT(JMenuItem('Figure'));
 set(handle(obj.JSaveAsFigureMenu,'CallbackProperties'),'ActionPerformedCallback',@(h,e) SaveAsFigure(obj));
 if is_pc
@@ -201,6 +201,10 @@ jMenuBar.add(obj.JFileMenu);
 obj.JLoadMenu.add(obj.JLoadVolumeMenu);
 obj.JLoadMenu.add(obj.JLoadSurfaceMenu);
 obj.JLoadMenu.add(obj.JLoadElectrodeMenu);
+
+obj.JSaveAsMenu.add(obj.JSaveAsVolumeMenu);
+obj.JSaveAsMenu.add(obj.JSaveAsSurfaceMenu);
+obj.JSaveAsMenu.add(obj.JSaveAsElectrodeMenu);
 obj.JSaveAsMenu.add(obj.JSaveAsFigureMenu);
 
 obj.JFileMenu.add(obj.JLoadMenu);
