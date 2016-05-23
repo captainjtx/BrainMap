@@ -580,7 +580,14 @@ classdef BrainMap < handle
         
         function saveConfig(obj)
             newcfg=obj.cfg;
-            save(obj.cfg_name,'-struct','newcfg','-mat');
+            fpath=fileparts(obj.cfg_name);
+            
+            if exist(fpath,'dir')==7
+                save(obj.cfg_name,'-struct','newcfg','-mat');
+            else
+                mkdir(fpath);
+                save(obj.cfg_name,'-struct','newcfg','-mat');
+            end
         end
         
         function DeleteElectrode( obj )

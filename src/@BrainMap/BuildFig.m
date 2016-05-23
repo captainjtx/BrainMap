@@ -80,7 +80,7 @@ obj.toolbtnpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0.73,1,
 obj.BuildIOBar();
 %%
 %suface tool pane==========================================================
-obj.surfacetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73],'visible','off');
+obj.surfacetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73]);
 %%
 %surface opacity
 uicontrol('parent',obj.surfacetoolpane,'style','text','units','normalized','position',[0,0.92,0.25,0.06],...
@@ -98,7 +98,7 @@ set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) SurfaceAlphaSp
 %%
 %volume tool pane==========================================================
 
-obj.volumetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73],'visible','on');
+obj.volumetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73]);
 
 %%
 %volume colormap
@@ -135,7 +135,7 @@ set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) VolumeSmoothSp
 
 %%
 %electrode tool pane=======================================================
-obj.electrodetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73],'visible','off');
+obj.electrodetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73]);
 uicontrol('parent',obj.electrodetoolpane,'style','text','units','normalized','position',[0,0.92,0.25,0.06],...
     'string','Color','horizontalalignment','left','fontunits','normalized','fontsize',0.5);
 
