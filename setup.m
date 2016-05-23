@@ -14,17 +14,22 @@ if ~strcmp(java_version(6:8),'1.7')
         return
     end
 end
+
+try 
+    mex lib/imgaussian_version1a/imgaussian.c
+catch
+end
 %save java class path into static file
 spath = javaclasspath('-static');
+pref_dir=prefdir;
 if ~any(strcmp(spath,pwd))
     javaaddpath(pwd);
+    
+    fid = fopen(fullfile(pref_dir,'javaclasspath.txt'),'a');
+    fprintf(fid,'%s\n',pwd);
+    fclose(fid);
 end
 
-pref_dir=prefdir;
-fid = fopen(fullfile(pref_dir,'javaclasspath.txt'),'a');
-
-fprintf(fid,'%s\n',pwd);
-fclose(fid);
 
 %clean matlab filepath
 while 1

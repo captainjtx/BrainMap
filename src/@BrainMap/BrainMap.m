@@ -631,7 +631,7 @@ classdef BrainMap < handle
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end
-        function ChangeInterface( obj,src )
+        function ChangeInterface(obj,src)
             if obj.JViewInterfaceVolumeMenu.isSelected()
                 obj.JFileLoadTree.clickVolume();
             elseif obj.JViewInterfaceSurfaceMenu.isSelected()
