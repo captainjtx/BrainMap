@@ -191,7 +191,10 @@ classdef ElectrodeSettings<handle
             
             [faces,vertices] = createContact3D...
                 (electrode.coor(ind,:),electrode.norm(ind,:),electrode.radius(ind),electrode.thickness(ind));
-            delete(electrode.handles(ind));
+            try
+                delete(electrode.handles(ind));
+            catch
+            end
             
             if electrode.selected(ind)
                 edgecolor='y';

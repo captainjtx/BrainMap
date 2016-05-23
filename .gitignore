@@ -1,2 +1,3 @@
 *.m~
 db/cfg/brainmap.cfg
+*.swp

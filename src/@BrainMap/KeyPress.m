@@ -107,8 +107,10 @@ if ~isempty(obj.SelectedElectrode)
             
             electrode.norm(ind(i),:)=electrode.coor(ind(i),:)-camtarget(obj.axis_3d);
             [faces,vertices] = createContact3D(electrode.coor(ind(i),:),electrode.norm(ind(i),:),electrode.radius(ind(i)),electrode.thickness(ind(i)));
-            
+            try
             delete(electrode.handles(ind(i)));
+            catch
+            end
             electrode.handles(ind(i))=patch(obj.axis_3d,'faces',faces,'vertices',vertices,...
                 'facecolor',electrode.color(ind(i),:),'edgecolor','y','UserData',userdat,...
                 'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');

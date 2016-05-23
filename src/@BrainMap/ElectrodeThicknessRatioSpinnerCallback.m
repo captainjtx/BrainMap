@@ -15,7 +15,10 @@ if ~isempty(obj.SelectedElectrode)
             (electrode.coor(ind(i),:),electrode.norm(ind(i),:),...
             electrode.radius(ind(i))*electrode.radius_ratio(ind(i)),...
             electrode.thickness(ind(i))*electrode.thickness_ratio(ind(i)));
-        delete(electrode.handles(ind(i)));
+        try
+            delete(electrode.handles(ind(i)));
+        catch
+        end
         
         if electrode.selected(ind(i))
             edgecolor='y';

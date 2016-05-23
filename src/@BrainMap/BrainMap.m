@@ -386,7 +386,10 @@ classdef BrainMap < handle
         function LightOffCallback(obj)
             obj.JLight.setIcon(obj.IconLightOn);
             obj.JLight.setToolTipText('Light on');
-            delete(findobj(obj.axis_3d,'type','light'));
+            try
+                delete(findobj(obj.axis_3d,'type','light'));
+            catch
+            end
             obj.light=[];
             set(handle(obj.JLight,'CallbackProperties'),'MousePressedCallback',@(h,e) LightOnCallback(obj));
         end
@@ -593,8 +596,14 @@ classdef BrainMap < handle
         function DeleteElectrode( obj )
             if ~isempty(obj.SelectedElectrode)
                 electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
-                delete(electrode.handles);
-                delete(electrode.map_h);
+                try
+                    delete(electrode.handles);
+                catch
+                end
+                try
+                    delete(electrode.map_h);
+                catch
+                end
                 remove(obj.mapObj,['Electrode',num2str(obj.SelectedElectrode)]);
                 obj.JFileLoadTree.deleteSelectedNode();
             end
@@ -603,7 +612,10 @@ classdef BrainMap < handle
         function DeleteSurface( obj )
             if ~isempty(obj.SelectedSurface)
                 surface=obj.mapObj(['Surface',num2str(obj.SelectedSurface)]);
-                delete(surface.handles);
+                try
+                    delete(surface.handles);
+                catch
+                end
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end
@@ -612,7 +624,10 @@ classdef BrainMap < handle
         function DeleteVolume(obj)
             if ~isempty(obj.SelectedVolume)
                 volume=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
-                delete(volume.handles);
+                try
+                    delete(volume.handles);
+                catch
+                end
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end

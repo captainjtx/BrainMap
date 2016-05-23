@@ -265,7 +265,9 @@ group3.add((obj.JViewInterfaceSurfaceMenu));
 group3.add((obj.JViewInterfaceElectrodeMenu));
 
 obj.JViewMenu.add(obj.JViewCameraMenu);
-
+try
 delete(bmp)
+catch
+end
 end
 

@@ -8,7 +8,10 @@ is_vol=regexp(allkeys,'^Volume');
 for i=1:length(is_vol)
     if ~isempty(is_vol{i})
         mapval=obj.mapObj(allkeys{i});
-        delete(mapval.handles);
+        try
+            delete(mapval.handles);
+        catch
+        end
         
         if obj.smooth_sigma>0
             img_vol=imgaussfilt3(mapval.volume,obj.smooth_sigma./mapval.pixdim);
