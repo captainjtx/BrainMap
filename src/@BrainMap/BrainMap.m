@@ -266,7 +266,7 @@ classdef BrainMap < handle
         end
         function val=get.valid(obj)
             try
-                val=ishandle(obj.fig)&&isvalid(obj.fig);
+                val=~isempty(obj.fig)&&ishandle(obj.fig);
             catch
                 val=0;
             end
@@ -293,6 +293,7 @@ classdef BrainMap < handle
             catch
             end
             obj.electrode_settings.OnClose();
+            obj.fig=[];
             
             saveConfig(obj);
         end
@@ -465,7 +466,6 @@ classdef BrainMap < handle
             end
         end
         function ElectrodeColorCallback(obj)
-            
             newcol=uisetcolor(obj.ecolor,'Electrode');
             obj.JElectrodeColorBtn.setBackground(java.awt.Color(newcol(1),newcol(2),newcol(3)));
             
@@ -616,6 +616,7 @@ classdef BrainMap < handle
                     delete(surface.handles);
                 catch
                 end
+                remove(obj.mapObj,['Surface',num2str(obj.SelectedSurface)]);
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end
@@ -628,6 +629,7 @@ classdef BrainMap < handle
                     delete(volume.handles);
                 catch
                 end
+                remove(obj.mapObj,['Volume',num2str(obj.SelectedVolume)]);
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end

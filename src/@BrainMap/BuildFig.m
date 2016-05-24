@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
 screensize=get(0,'ScreenSize');
 obj.fig=figure('Menubar','none','Name',['Welcome to BrainMap ',char(169),'2016 Tianxiao Jiang'],...
@@ -139,7 +140,7 @@ obj.electrodetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0
 uicontrol('parent',obj.electrodetoolpane,'style','text','units','normalized','position',[0,0.92,0.25,0.06],...
     'string','Color','horizontalalignment','left','fontunits','normalized','fontsize',0.5);
 
-obj.JElectrodeColorBtn = javaObjectEDT(JButton());
+obj.JElectrodeColorBtn = javaObjectEDT(JPanel());
 obj.JElectrodeColorBtn.setBorder(BorderFactory.createLineBorder(Color.black));
 obj.JElectrodeColorBtn.setBackground(Color(1,0.8,0.6));
 obj.JElectrodeColorBtn.setOpaque(true);

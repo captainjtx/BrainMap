@@ -771,6 +771,7 @@ public class FileLoadTree
         DefaultMutableTreeNode node;
         
         TreePath[] paths = tree.getSelectionPaths();
+        tree.setSelectionPath(null);
         for (int i = 0; i < paths.length; i++) {
             node = (DefaultMutableTreeNode) (paths[i].getLastPathComponent());
             defaultTreeModel.removeNodeFromParent(node);

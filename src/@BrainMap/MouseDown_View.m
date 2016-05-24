@@ -76,6 +76,8 @@ if obj.JTogNewElectrode.isSelected()
     [~,ind]=min(sum(tmpv.^2,2));
     new_coor=interp(ind,:);
     new_norm=origin(:)'-new_coor;
+    radius_ratio=obj.JElectrodeRadiusRatioSpinner.getValue()/100;
+    thickness_ratio=obj.JElectrodeThicknessRatioSpinner.getValue()/100;
     %%
     if isempty(obj.SelectedElectrode)
         %create a new electrode
@@ -98,9 +100,10 @@ if obj.JTogNewElectrode.isSelected()
         electrode.coor_interp=10;
         electrode.map_alpha=0.8;
         electrode.map_colormap='jet';
-        electrode.radius_ratio=1;
-        electrode.thickness_ratio=1;
+        electrode.radius_ratio=radius_ratio;
+        electrode.thickness_ratio=thickness_ratio;
         electrode.map=nan;
+        
     else
         electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
         new_channame=num2str(size(electrode.coor,1)+1);
@@ -114,6 +117,8 @@ if obj.JTogNewElectrode.isSelected()
         electrode.selected=ones(size(electrode.coor,1),1)*false;
         electrode.selected(end)=true;
         
+        electrode.radius_ratio=cat(1,electrode.radius_ratio,radius_ratio);
+        electrode.thickness_ratio=cat(1,electrode.thickness_ratio,thickness_ratio);
         electrode.channame=cat(1,electrode.channame(:),new_channame);
         electrode.map=cat(1,electrode.map,nan);
     end

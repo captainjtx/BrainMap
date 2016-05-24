@@ -83,7 +83,15 @@ mapval.zrange=zdata;
 
 
 if obj.smooth_sigma>0
-    img_vol=imgaussfilt3(mapval.volume,obj.smooth_sigma./mapval.pixdim);
+    try
+        img_vol=imgaussfilt3(mapval.volume,obj.smooth_sigma./mapval.pixdim);
+    catch
+        try
+            img_vol=imgaussian(mapval.volume,mean(obj.smooth_sigma./mapval.pixdim));
+        catch
+            img_vol=imgaussian_matlab(mapval.volume,mean(obj.smooth_sigma./mapval.pixdim));
+        end
+    end
 else
     img_vol=mapval.volume;
 end

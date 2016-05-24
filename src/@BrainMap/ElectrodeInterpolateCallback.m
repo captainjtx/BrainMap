@@ -11,6 +11,9 @@ if ~isempty(obj.SelectedElectrode)
     norm=mean(electrode.norm(ind,:),1);
     radius=obj.JElectrodeRadiusSpinner.getValue();
     thickness=obj.JElectrodeThicknessSpinner.getValue();
+    
+    radius_ratio=obj.JElectrodeRadiusRatioSpinner.getValue()/100;
+    thickness_ratio=obj.JElectrodeThicknessRatioSpinner.getValue()/100;
     color=mean(electrode.color(ind,:),1);
     
     prompt={'ChannelName','Position','Norm vector','Radius','Thickness','Color'};
@@ -34,8 +37,10 @@ if ~isempty(obj.SelectedElectrode)
         electrode.coor=cat(1,electrode.coor,new_coor);
         electrode.norm=cat(1,electrode.norm,new_norm);
         electrode.radius=cat(1,electrode.radius(:),new_radius);
+        electrode.raidus_ratio=cat(1,electrode.radius_ratio,radius_ratio);
         electrode.thickness=cat(1,electrode.thickness(:),new_thickness);
         electrode.color=cat(1,electrode.color,new_color);
+        electrode.thickness_ratio=cat(1,electrode.thickness_ratio,thickness_ratio);
         
         electrode.selected=ones(size(electrode.coor,1),1)*false;
         electrode.selected(end)=true;

@@ -33,7 +33,7 @@ classdef ElectrodeSettings<handle
         end
         function val=get.valid(obj)
             try
-                val=ishandle(obj.fig)&&isvalid(obj.fig);
+                val=~isempty(obj.fig)&&ishandle(obj.fig);
             catch
                 val=0;
             end
@@ -121,8 +121,10 @@ classdef ElectrodeSettings<handle
         function OnClose(obj)
             try
                 delete(obj.fig);
+                obj.fig=[];
             catch
             end
+            obj.fig=[];
         end
         
         function cellClick(obj,src,evt)

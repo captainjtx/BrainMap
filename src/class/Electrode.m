@@ -62,6 +62,12 @@ classdef Electrode<handle
                 obj.map(ind)=[];
             end
             
+            if ~isempty(obj.radius_ratio)
+                obj.radius_ratio(ind)=[];
+            end
+            if ~isempty(obj.thickness_ratio)
+                obj.thickness_ratio(ind)=[];
+            end
             if ~isempty(obj.handles)
                 try
                 delete(obj.handles(ind));
