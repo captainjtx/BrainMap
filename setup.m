@@ -17,6 +17,7 @@ end
 
 try 
     mex lib/imgaussian_version1a/imgaussian.c
+    movefile('imgaussian.mex*','lib/imgaussian_version1a/');
 catch
 end
 %save java class path into static file
