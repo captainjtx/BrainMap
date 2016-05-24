@@ -15,7 +15,8 @@ if ~isempty(obj.SelectedElectrode)
         cmax=obj.JMapMaxSpinner.getValue();
         
         if cmin<cmax
-            cmap=colormap(electrode.map_colormap);
+            func=str2func(electrode.map_colormap);
+            cmap=func();
             
             map=get(electrode.map_h,'UserData');
             
