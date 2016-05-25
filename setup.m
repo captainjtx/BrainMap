@@ -58,9 +58,6 @@ addpath(genpath([pwd filesep 'src']),'-frozen');
 addpath(genpath([pwd filesep 'db']),'-frozen');
 addpath(genpath([pwd filesep 'lib']),'-frozen');
 addpath(genpath([pwd filesep 'script']),'-frozen');
-addpath(genpath([pwd filesep 'test']),'-frozen');
-addpath(genpath([pwd filesep 'demo']),'-frozen');
-
 
 try
     savepath;

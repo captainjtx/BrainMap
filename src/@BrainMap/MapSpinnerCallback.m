@@ -7,14 +7,13 @@ if ~isempty(obj.SelectedElectrode)
         cmax=obj.JMapMaxSpinner.getValue();
         
         if cmin<cmax
-            cmap=colormap(electrode.map_colormap);
-            
-            clevel=linspace(cmin,cmax,size(cmap,1));
+            fcn=str2func(electrode.map_colormap);
+            cmap=fcn(64);
             
             map=get(electrode.map_h,'UserData');
             cmapv=zeros(length(map),3);
             for i=1:length(map)
-                [~,index] = min(abs(clevel-map(i)));
+                index=min(max(1,round((map(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
                 cmapv(i,:)=cmap(index,:);
             end
             

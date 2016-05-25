@@ -10,7 +10,6 @@ if ~isempty(obj.SelectedElectrode)
     electrode.map_colormap=cmapName;
     
     if is_handle_valid(electrode.map_h)
-        
         cmin=obj.JMapMinSpinner.getValue();
         cmax=obj.JMapMaxSpinner.getValue();
         
@@ -32,8 +31,6 @@ if ~isempty(obj.SelectedElectrode)
             set(electrode.map_h,'FaceVertexCData',cmapv)
         end
     end
-    
-    obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
 end
 
 obj.NotifyTaskEnd('Map refresh complete !');

@@ -17,11 +17,12 @@ if ~isempty(obj.SelectedElectrode)
         
         cmin=obj.JMapMinSpinner.getValue();
         cmax=obj.JMapMaxSpinner.getValue();
-        cmap=colormap(electrode.map_colormap);
-        clevel=linspace(cmin,cmax,size(cmap,1));
+        
+        fcn=str2func(electrode.map_colormap);
+        cmap=fcn(64);
+        
         for i=1:length(newmap)
-            [~,index] = min(abs(clevel-newmap(i)));
-            
+            index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
             cmapv(i,:)=cmap(index,:);
         end
         
@@ -35,7 +36,6 @@ if ~isempty(obj.SelectedElectrode)
             'UserData',newmap);
         material dull
     end
-   obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
 end
 obj.NotifyTaskEnd('Map interpolation complete !');
 

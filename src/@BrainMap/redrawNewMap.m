@@ -1,5 +1,4 @@
 function  electrode=redrawNewMap(obj,electrode)
-
 pos=electrode.coor;
 map=electrode.map;
 %%
@@ -17,8 +16,8 @@ cmax=obj.JMapMaxSpinner.getValue();
 F= scatteredInterpolant(pos(:,1),pos(:,2),pos(:,3),map,'natural','linear');
 electrode.F=F;
 
-cmap=colormap(electrode.map_colormap);
-clevel=linspace(cmin,cmax,size(cmap,1));
+fcn=str2func(electrode.map_colormap);
+cmap=fcn(64);
 
 if ~is_handle_valid(electrode.map_h)
     newpos=interp_tri(pos,electrode.coor_interp);
@@ -29,8 +28,7 @@ if ~is_handle_valid(electrode.map_h)
     
     cmapv=zeros(length(newmap),3);
     for i=1:length(newmap)
-        [~,index] = min(abs(clevel-newmap(i)));
-        
+        index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
         cmapv(i,:)=cmap(index,:);
     end
     
@@ -45,14 +43,13 @@ else
     
     cmapv=zeros(length(newmap),3);
     for i=1:length(newmap)
-        [~,index] = min(abs(clevel-newmap(i)));
-        
+        index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
         cmapv(i,:)=cmap(index,:);
     end
     
     set(electrode.map_h,'UserData',newmap,'FaceVertexCData',cmapv);
 end
 
-
+% VolumeColormapCallback(obj);
 end
 

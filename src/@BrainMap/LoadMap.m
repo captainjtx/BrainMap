@@ -46,8 +46,6 @@ if ~isempty(obj.SelectedElectrode)
     %%
     electrode=obj.redrawNewMap(electrode);
     
-    obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
-    
     if electrode.ind==obj.electrode_settings.select_ele
         notify(obj,'ElectrodeSettingsChange')
     end

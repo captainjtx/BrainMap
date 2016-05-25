@@ -1,4 +1,4 @@
-electrode=load('/Users/tengi/Desktop/Projects/data/Turkey/s1/electrode.mat');
+electrode=load('Z:\Tianxiao\s1\electrode.mat');
 for i=9:8:49
     new_coor=electrode.coor(strcmp(['C',num2str(65+(i-9)/8*7),'_S'],electrode.channame),:)+...
         electrode.coor(strcmp(['C',num2str(65+(i-9)/8*7+7),'_S'],electrode.channame),:)-...
@@ -142,5 +142,5 @@ electrode.color=cat(1,electrode.color,new_color);
 
 electrode.channame=cat(1,electrode.channame(:),new_channame);
 
-save('/Users/tengi/Desktop/Projects/data/Turkey/s1/electrode1.mat','-struct','electrode')
+save('Z:\Tianxiao\s1\electrode1.mat','-struct','electrode')
     

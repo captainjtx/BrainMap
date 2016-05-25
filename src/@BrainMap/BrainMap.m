@@ -339,6 +339,11 @@ classdef BrainMap < handle
             position(1)=position(1)+figpos(1);
             position(2)=position(2)+figpos(2);
             f=figure('Name','Axis 3D','Position',position,'visible','on','color',get(obj.ViewPanel,'BackgroundColor'));
+            listIdx = get(obj.VolumeColorMapPopup,'Value');
+            cmapName=get(obj.VolumeColorMapPopup,'UserData');
+            cmapName=cmapName{listIdx};
+            colormap(f,lower(cmapName));
+            
             newp=copyobj(obj.ViewPanel,f);
             set(newp,'units','normalized','position',[0,0,1,1]);
 
@@ -453,7 +458,6 @@ classdef BrainMap < handle
             colormap(obj.axis_3d,lower(cmapName));
         end
         function VolumeScaleSpinnerCallback(obj)
-            
             min=obj.JVolumeMinSpinner.getValue();
             max=obj.JVolumeMaxSpinner.getValue();
             
