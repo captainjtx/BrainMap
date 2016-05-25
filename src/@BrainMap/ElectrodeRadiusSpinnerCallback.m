@@ -30,7 +30,6 @@ if ~isempty(obj.SelectedElectrode)
             'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src),'facelighting','gouraud');
     end
     material dull;
-    obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
     if electrode.ind==obj.electrode_settings.select_ele
         notify(obj,'ElectrodeSettingsChange')
     end

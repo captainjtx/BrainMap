@@ -37,7 +37,7 @@ if ~isempty(obj.SelectedElectrode)
         electrode.coor=cat(1,electrode.coor,new_coor);
         electrode.norm=cat(1,electrode.norm,new_norm);
         electrode.radius=cat(1,electrode.radius(:),new_radius);
-        electrode.raidus_ratio=cat(1,electrode.radius_ratio,radius_ratio);
+        electrode.radius_ratio=cat(1,electrode.radius_ratio,radius_ratio);
         electrode.thickness=cat(1,electrode.thickness(:),new_thickness);
         electrode.color=cat(1,electrode.color,new_color);
         electrode.thickness_ratio=cat(1,electrode.thickness_ratio,thickness_ratio);
@@ -57,8 +57,6 @@ if ~isempty(obj.SelectedElectrode)
         'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
         set(electrode.handles,'edgecolor','none');
         electrode.handles=cat(1,electrode.handles(:),new_h);
-        
-        obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
         
         if electrode.ind==obj.electrode_settings.select_ele
             notify(obj,'ElectrodeSettingsChange')

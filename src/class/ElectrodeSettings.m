@@ -137,8 +137,6 @@ classdef ElectrodeSettings<handle
                 obj.Data{indices(1),7}=ElectrodeSettings.colorgen(color,'');
                 
                 set(electrode.handles(indices(1)),'facecolor',color);
-                
-                obj.bm.mapObj(obj.ele_key)=electrode;
             end
         end
         
@@ -183,7 +181,6 @@ classdef ElectrodeSettings<handle
                         electrode.map(indices(1))=evt.NewData;
                         electrode=obj.bm.redrawNewMap(electrode);
                 end
-                obj.bm.mapObj(obj.ele_key)=electrode;
             end
         end
         
@@ -218,8 +215,6 @@ classdef ElectrodeSettings<handle
             electrode.remove(ind);
             
             obj.Data(logical(electrode.selected),:)=[];
-            
-            obj.bm.mapObj(obj.ele_key)=electrode;
         end
         
         function updateData(obj)
@@ -249,8 +244,6 @@ classdef ElectrodeSettings<handle
             dat=obj.Data;
             [dat{:,1}]=deal(false);
             obj.Data=dat;
-            
-            obj.bm.mapObj(obj.ele_key)=electrode;
         end
     end
     methods (Static=true)
