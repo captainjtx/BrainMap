@@ -15,11 +15,6 @@ if ~strcmp(java_version(6:8),'1.7')
     end
 end
 
-try 
-    mex lib/imgaussian_version1a/imgaussian.c
-    movefile('imgaussian.mex*','lib/imgaussian_version1a/');
-catch
-end
 %save java class path into static file
 spath = javaclasspath('-static');
 pref_dir=prefdir;

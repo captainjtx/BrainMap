@@ -14,15 +14,7 @@ for i=1:length(is_vol)
         end
         
         if obj.smooth_sigma>0
-            try
-                img_vol=imgaussfilt3(mapval.volume,obj.smooth_sigma./mapval.pixdim);
-            catch
-                try
-                    img_vol=imgaussian(mapval.volume,mean(obj.smooth_sigma./mapval.pixdim));
-                catch
-                    img_vol=imgaussian_matlab(mapval.volume,mean(obj.smooth_sigma./mapval.pixdim));
-                end
-            end
+            img_vol=smooth3(mapval.volume,'gaussian',obj.smooth_sigma./mapval.pixdim);
         else
             img_vol=mapval.volume;
         end
