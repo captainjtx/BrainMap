@@ -83,19 +83,21 @@ mapval.zrange=zdata;
 
 
 if obj.smooth_sigma>0
-    try
-        img_vol=imgaussfilt3(mapval.volume,obj.smooth_sigma./mapval.pixdim);
-    catch
-        try
-            img_vol=imgaussian(mapval.volume,mean(obj.smooth_sigma./mapval.pixdim));
-        catch
-            img_vol=imgaussian_matlab(mapval.volume,mean(obj.smooth_sigma./mapval.pixdim));
-        end
-    end
+    img_vol=smooth3(mapval.volume,'gaussian',2*round(obj.smooth_sigma./mapval.pixdim/2)+1);
 else
     img_vol=mapval.volume;
 end
-    
+
+% alpha=img_vol;
+% max_val=max(max(max(img_vol)));
+% min_val=min(min(min(img_vol)));
+% 
+% alpha=(alpha-min_val)/(max_val-min_val)*1;
+% alpha(alpha<0.2)=0;
+% alpha(alpha>0.6)=0;
+% alpha(alpha>0)=1;
+
+
 tmp=vol3d('cdata',img_vol,'texture','3D','Parent',obj.axis_3d,...
     'XData',mapval.xrange,'YData',mapval.yrange,'ZData',mapval.zrange);
 mapval.handles=tmp.handles;

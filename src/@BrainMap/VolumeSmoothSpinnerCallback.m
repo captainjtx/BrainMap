@@ -14,7 +14,7 @@ for i=1:length(is_vol)
         end
         
         if obj.smooth_sigma>0
-            img_vol=smooth3(mapval.volume,'gaussian',obj.smooth_sigma./mapval.pixdim);
+            img_vol=smooth3(mapval.volume,'gaussian',2*round(obj.smooth_sigma./mapval.pixdim/2)+1);
         else
             img_vol=mapval.volume;
         end
