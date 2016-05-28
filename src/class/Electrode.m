@@ -52,6 +52,9 @@ classdef Electrode<handle
             obj.radius(ind)=[];
             obj.thickness(ind)=[];
             obj.color(ind,:)=[];
+            if ~isempty(obj.channame)
+                obj.channame(ind)=[];
+            end
             if ~isempty(obj.norm)
                 obj.norm(ind,:)=[];
             end

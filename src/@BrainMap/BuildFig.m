@@ -230,7 +230,13 @@ set(gh,'Units','Norm','Position',[0.75,0.35,0.22,0.06]);
 set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapInterpolationCallback(obj));
 
 %%
-obj.TextInfo=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0,0,1,1],...
+obj.TextInfo1=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0,0,0.3333,1],...
+    'style','Text','String','','HorizontalAlignment','left','fontweight','bold','fontunits','normalized','fontsize',0.2);
+
+obj.TextInfo2=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0.3333,0,0.3333,1],...
+    'style','Text','String','','HorizontalAlignment','left','fontweight','bold','fontunits','normalized','fontsize',0.2);
+
+obj.TextInfo3=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0.6666,0,0.3333,1],...
     'style','Text','String','','HorizontalAlignment','left','fontweight','bold','fontunits','normalized','fontsize',0.2);
 
 %%
