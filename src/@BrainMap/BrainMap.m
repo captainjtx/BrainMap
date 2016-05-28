@@ -353,12 +353,12 @@ classdef BrainMap < handle
         end
         
         function NotifyTaskStart(obj,str)
-            set(obj.TextInfo2,'String',str,'fontunits','normalized','fontsize',0.4,...
+            set(obj.TextInfo2,'String',str,'fontunits','normalized','fontsize',0.3,...
                 'ForegroundColor',[12,60,38]/255,'HorizontalAlignment','center');
             drawnow
         end
         function NotifyTaskEnd(obj,str)
-            set(obj.TextInfo2,'String',str,'fontunits','normalized','fontsize',0.4,...
+            set(obj.TextInfo2,'String',str,'fontunits','normalized','fontsize',0.3,...
                 'ForegroundColor',[12,60,38]/255,'HorizontalAlignment','center');
             drawnow
         end
@@ -504,13 +504,11 @@ classdef BrainMap < handle
             set(electrode.handles,'edgecolor','none');
             set(electrode.handles(logical(electrode.selected)),'edgecolor','y');
             
-            obj.mapObj(['Electrode',num2str(dat.ele)])=electrode;
-            
             if electrode.ind==obj.electrode_settings.select_ele
                 notify(obj,'ElectrodeSettingsChange')
             end
             
-            obj.NotifyTaskStart(dat.name);
+            obj.NotifyTaskStart({dat.name,num2str(electrode.coor(datind,:))});
         end
         
 
