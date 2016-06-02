@@ -184,6 +184,7 @@ classdef ElectrodeSettings<handle
                     case 9
                         electrode.map_sig(indices(1))=evt.NewData;
                         redrawElectrode(obj,electrode,indices(1));
+                        electrode=obj.bm.redrawNewMap(electrode);
                 end
             end
         end
@@ -209,7 +210,7 @@ classdef ElectrodeSettings<handle
             else
                 col='w';
             end
-            electrode.handles(ind)=patch('faces',faces,'vertices',vertices,...
+            electrode.handles(ind)=patch('parent',obj.bm.axis_3d,'faces',faces,'vertices',vertices,...
                 'facecolor',col,'edgecolor',edgecolor,'UserData',userdat,...
                 'ButtonDownFcn',@(src,evt) obj.bm.ClickOnElectrode(src),'facelighting','gouraud');
             material dull;

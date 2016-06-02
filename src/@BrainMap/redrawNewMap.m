@@ -1,6 +1,10 @@
 function  electrode=redrawNewMap(obj,electrode)
 pos=electrode.coor;
 map=electrode.map;
+
+if obj.JMapOnlyShowSig.isSelected()
+    map(electrode.map_sig==0)=0;
+end
 %%
 max_map=max(map);
 min_map=min(map);

@@ -159,6 +159,7 @@ classdef BrainMap < handle
         JMapAlphaSlider
         
         JMapInterpolationSpinner
+        JMapOnlyShowSig
         
         TextInfo1
         TextInfo2
@@ -655,8 +656,14 @@ classdef BrainMap < handle
                 electrode.save();
             end
         end
-
-
+        
+        function MapShowSigCallback(obj)
+            ele=obj.SelectedElectrode;
+            if ~isempty(ele)
+                electrode=obj.mapObj(['Electrode',num2str(ele)]);
+                electrode=obj.redrawNewMap(electrode);
+            end
+        end
     end
     methods
         LoadSurface(obj)

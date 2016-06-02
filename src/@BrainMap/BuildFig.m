@@ -7,6 +7,7 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 screensize=get(0,'ScreenSize');
 obj.fig=figure('Menubar','none','Name',['Welcome to BrainMap ',char(169),'2016 Tianxiao Jiang'],...
@@ -228,7 +229,12 @@ obj.JMapInterpolationSpinner =javaObjectEDT(JSpinner(model));
 [jh,gh]=javacomponent(obj.JMapInterpolationSpinner,[0,0,1,1],obj.electrodetoolpane);
 set(gh,'Units','Norm','Position',[0.75,0.35,0.22,0.06]);
 set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapInterpolationCallback(obj));
-
+%%
+%significant
+obj.JMapOnlyShowSig=javaObjectEDT(JRadioButton('Show only significant channels'));
+[jh,gh]=javacomponent(obj.JMapOnlyShowSig,[0,0,1,1],obj.electrodetoolpane);
+set(gh,'Units','Norm','Position',[0,0.25,1,0.06]);
+set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapShowSigCallback(obj));
 %%
 obj.TextInfo1=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0,0,0.3333,1],...
     'style','Text','String','','HorizontalAlignment','left','fontweight','bold','fontunits','normalized','fontsize',0.2);
