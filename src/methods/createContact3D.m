@@ -6,7 +6,6 @@ function [faces,vertices] = createContact3D(loc,Vn,r,d)
 
 %By Tianxiao Jiang
 %jtxinnocence@gmail.com
-n=20;
 
 if Vn(1)~=0
     Vp=[-Vn(2),Vn(1),0];
@@ -24,6 +23,8 @@ Vn=Vn(:)';
 
 loc=loc+Vn*d/2;
 
+n=20;
+
 top.vertices=zeros(n,3);
 
 side.vertices=zeros(n*4,3);
@@ -34,10 +35,10 @@ for i=1:n
     top.vertices(i,:)=loc+Vp*r;
     %Tangent direction
     Vt=cross(Vp,Vn);
-%     Vt(1) = Vp(2) * Vn(3) - Vp(3) * Vn(2);
-%     Vt(2) = Vp(3) * Vn(1) - Vp(1) * Vn(3);
-%     Vt(3) = Vp(1) * Vn(2) - Vp(2) * Vn(1);
-
+    %     Vt(1) = Vp(2) * Vn(3) - Vp(3) * Vn(2);
+    %     Vt(2) = Vp(3) * Vn(1) - Vp(1) * Vn(3);
+    %     Vt(3) = Vp(1) * Vn(2) - Vp(2) * Vn(1);
+    
     Vt=Vt/norm(Vt);
     
     Vp=Vp*r+Vt*R;
@@ -59,7 +60,7 @@ top.faces=1:n;
 faces=ones(n+1,n)*nan;
 faces(1,:)=top.faces;
 faces(2:end,1:4)=side.faces+n;
-
 vertices=[top.vertices;side.vertices];
+
 end
 

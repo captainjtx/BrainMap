@@ -26,6 +26,10 @@ end
 if ~isfield(tmp,'map')
     tmp.map=ones(size(tmp.coor,1),1)*nan;
 end
+
+if ~isfield(tmp,'map_sig')
+    tmp.map_sig=zeros(size(tmp.coor,1),1);
+end
     
 
 num=obj.JFileLoadTree.addElectrode(fpath,true);
@@ -38,8 +42,13 @@ for i=1:size(tmp.coor,1)
     
     [faces,vertices] = createContact3D(tmp.coor(i,:),tmp.norm(i,:),tmp.radius(i),tmp.thickness(i));
     
+    if tmp.map_sig(i)==0
+        col=tmp.color(i,:);
+    else
+        col='w';
+    end
     mapval.handles(i)=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
-        'facecolor',tmp.color(i,:),'edgecolor','none','UserData',userdat,...
+        'facecolor',col,'edgecolor','none','UserData',userdat,...
         'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
 end
 material dull;
@@ -55,6 +64,7 @@ mapval.checked=true;
 mapval.selected=ones(size(mapval.coor,1),1)*true;
 mapval.channame=tmp.channame;
 mapval.map=tmp.map;
+mapval.map_sig=tmp.map_sig;
 mapval.map_h=[];
 mapval.coor_interp=10;
 mapval.map_alpha=0.8;
@@ -62,6 +72,8 @@ mapval.map_colormap='jet';
 mapval.F=[];
 mapval.radius_ratio=ones(size(mapval.coor,1),1);
 mapval.thickness_ratio=ones(size(mapval.coor,1),1);
+
+mapval=obj.redrawNewMap(mapval);
 
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 

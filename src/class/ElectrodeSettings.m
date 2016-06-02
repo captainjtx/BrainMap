@@ -61,17 +61,17 @@ classdef ElectrodeSettings<handle
             sidepos = getpixelposition(obj.bm.SidePanel);
             screensize=get(0,'ScreenSize');
             
-            columnWidth=[40,40,180,180,60,60,40,60];
+            columnWidth=[40,40,180,180,60,60,40,60,40];
             
             obj.fig=figure('Menubar','none','Name','Electrode Settings','units','pixels','position',...
                 [bmpos(1)+sidepos(1),screensize(4)/2-325,sum(columnWidth)+50,500],...
                 'NumberTitle','off','CloseRequestFcn',@(src,evts) OnClose(obj),'resize','off','Dockcontrols','off');
             
-            columnName={'Select','Name','Position','Norm','Radius','Thickness','Color','Value'};
-            columnFormat={'logical','char','char','char','numeric','numeric','char','numeric'};
-            columnEditable=[true,true,true,true,true,true,false,true];
+            columnName={'Select','Name','Position','Norm','Radius','Thickness','Color','Value','Sig'};
+            columnFormat={'logical','char','char','char','numeric','numeric','char','numeric','numeric'};
+            columnEditable=[true,true,true,true,true,true,false,true,true];
             
-            data=cell(size(electrode.coor,1),8);
+            data=cell(size(electrode.coor,1),9);
             for i=1:size(electrode.coor,1)
                 data{i,1}=logical(electrode.selected(i));
                 data{i,2}=electrode.channame{i};
@@ -81,6 +81,7 @@ classdef ElectrodeSettings<handle
                 data{i,6}=electrode.thickness(i);
                 data{i,7}=ElectrodeSettings.colorgen(electrode.color(i,:),'');
                 data{i,8}=electrode.map(i);
+                data{i,9}=electrode.map_sig(i);
             end
             
             columnWidth=num2cell(columnWidth);
@@ -180,6 +181,9 @@ classdef ElectrodeSettings<handle
                     case 8
                         electrode.map(indices(1))=evt.NewData;
                         electrode=obj.bm.redrawNewMap(electrode);
+                    case 9
+                        electrode.map_sig(indices(1))=evt.NewData;
+                        redrawElectrode(obj,electrode,indices(1));
                 end
             end
         end
@@ -200,9 +204,13 @@ classdef ElectrodeSettings<handle
             else
                 edgecolor='none';
             end
-            
+            if electrode.map_sig(ind)==0
+                col=electrode.color(ind,:);
+            else
+                col='w';
+            end
             electrode.handles(ind)=patch('faces',faces,'vertices',vertices,...
-                'facecolor',electrode.color(ind,:),'edgecolor',edgecolor,'UserData',userdat,...
+                'facecolor',col,'edgecolor',edgecolor,'UserData',userdat,...
                 'ButtonDownFcn',@(src,evt) obj.bm.ClickOnElectrode(src),'facelighting','gouraud');
             material dull;
         end
@@ -230,6 +238,7 @@ classdef ElectrodeSettings<handle
                     data{i,6}=electrode.thickness(i);
                     data{i,7}=ElectrodeSettings.colorgen(electrode.color(i,:),'');
                     data{i,8}=electrode.map(i);
+                    data{i,9}=electrode.map_sig(i);
                 end
                 obj.Data=data;
             end

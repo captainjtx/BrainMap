@@ -21,6 +21,7 @@ classdef Electrode<handle
         radius_ratio% simultaneously enlarge/shrink radius
         thickness_ratio% simultaneously enlarge/shrink thickness 
         handles% [N*1] handles of electrode patch objects
+        map_sig
     end
     
     methods
@@ -42,6 +43,8 @@ classdef Electrode<handle
                 mapval.norm=obj.norm;
                 mapval.channame=obj.channame;
                 mapval.map=obj.map;
+                mapval.map_sig=obj.map_sig;
+                
                 save(fullfile(FilePath,FileName),'-struct','mapval','-mat','-v7.3');
             end
             
@@ -63,6 +66,9 @@ classdef Electrode<handle
             end
             if ~isempty(obj.map)
                 obj.map(ind)=[];
+            end
+            if ~isempty(obj.map_sig)
+                obj.map_sig(ind)=[];
             end
             
             if ~isempty(obj.radius_ratio)
