@@ -75,39 +75,20 @@ LightOffCallback(obj)
 % [X,Y,Z]=meshgrid(1:size(volume,2),1:size(volume,1),1:size(volume,3));
 % [newX,newY,newZ]=meshgrid(1:0.5:size(volume,2),1:0.5:size(volume,1),1:0.5:size(volume,3));
 % newV=interp3(X,Y,Z,volume,newX,newY,newZ);
+
+mapval=Volume;
+
 mapval.volume=volume;
 mapval.pixdim=pixdim;
 mapval.xrange=xdata;
 mapval.yrange=ydata;
 mapval.zrange=zdata;
 
-
-if obj.smooth_sigma>0
-    img_vol=smooth3(mapval.volume,'gaussian',2*round(obj.smooth_sigma./mapval.pixdim/2)+1);
-else
-    img_vol=mapval.volume;
-end
-
-% alpha=img_vol;
-% max_val=max(max(max(img_vol)));
-% min_val=min(min(min(img_vol)));
-% 
-% alpha=(alpha-min_val)/(max_val-min_val)*1;
-% alpha(alpha<0.2)=0;
-% alpha(alpha>0.6)=0;
-% alpha(alpha>0)=1;
-
-
-tmp=vol3d('cdata',img_vol,'texture','3D','Parent',obj.axis_3d,...
-    'XData',mapval.xrange,'YData',mapval.yrange,'ZData',mapval.zrange);
-mapval.handles=tmp.handles;
-
-VolumeColormapCallback(obj);
-axis vis3d
-axis equal off
-set(obj.axis_3d,'clim',[obj.cmin,obj.cmax]);
-
-hold on;
+%%
+%2D plot
+mapval.h_sagittal=imagesc('Parent',obj.axis_sagittal,'XData',xdata,'YData',ydata,'CData',squeeze(volume(:,:,round(end/2))));
+mapval.h_coronal=imagesc('Parent',obj.axis_coronal,'XData',xdata,'YData',zdata,'CData',squeeze(volume(:,round(end/2),:)));
+mapval.h_axial=imagesc('Parent',obj.axis_axial,'XData',ydata,'YData',zdata,'CData',squeeze(volume(round(end/2),:,:)));
 
 num=obj.JFileLoadTree.addVolume(fpath,true);
 mapval.category='Volume';
@@ -118,8 +99,7 @@ mapval.checked=true;
 
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
-material dull
-
+VolumeColormapCallback(obj);
 obj.NotifyTaskEnd('Volume load complete !');
 end
 

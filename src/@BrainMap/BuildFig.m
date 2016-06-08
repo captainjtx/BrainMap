@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import src.java.checkboxtree.FileLoadTree;
 
 screensize=get(0,'ScreenSize');
 obj.fig=figure('Menubar','none','Name',['Welcome to BrainMap ',char(169),'2016 Tianxiao Jiang'],...
@@ -66,7 +67,7 @@ obj.inView=obj.isIn(get(obj.fig,'CurrentPoint'),getpixelposition(obj.ViewPanel))
 
 obj.BuildToolbar();
 
-obj.JFileLoadTree=javaObjectEDT(src.java.checkboxtree.FileLoadTree());
+obj.JFileLoadTree=javaObjectEDT(FileLoadTree());
 obj.JFileLoadTree.buildfig();
 
 jh=obj.JFileLoadTree;

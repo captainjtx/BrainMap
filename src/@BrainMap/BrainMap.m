@@ -217,6 +217,8 @@ classdef BrainMap < handle
                 end
             end
         end
+        
+        
         function val=get.SelectedSurface(obj)
             id=char(obj.JFileLoadTree.getSelectedItem());
             val=[];
@@ -378,17 +380,36 @@ classdef BrainMap < handle
         function CheckChangedCallback(obj,src,evt)
             obj.NotifyTaskStart('Add/Remove objects from axis ...');
             mapval=obj.mapObj(char(evt.getKey()));
-            if evt.ischecked
-                set(mapval.handles,'visible','on');
-                mapval.checked=true;
-            else
-                set(mapval.handles,'visible','off');
-                mapval.checked=false;
+            
+            switch mapval.category
+                case 'Electrode'
+                    if evt.ischecked
+                        set(mapval.handles,'visible','on');
+                        mapval.checked=true;
+                    else
+                        set(mapval.handles,'visible','off');
+                        mapval.checked=false;
+                    end
+                    if mapval.ind==obj.electrode_settings.select_ele
+                        notify(obj,'ElectrodeSettingsChange')
+                    end
+                case 'Volume'
+                    if evt.ischecked
+                        set(mapval.handles,'visible','on');
+                        set(mapval.h_sagittal,'visible','on');
+                        set(mapval.h_coronal,'visible','on');
+                        set(mapval.h_axial,'visible','on');
+                        mapval.checked=true;
+                    else
+                        set(mapval.handles,'visible','off');
+                        set(mapval.h_sagittal,'visible','off');
+                        set(mapval.h_coronal,'visible','off');
+                        set(mapval.h_axial,'visible','off');
+                        mapval.checked=false;
+                    end 
             end
-            obj.mapObj(char(evt.getKey()))=mapval;
-            if mapval.ind==obj.electrode_settings.select_ele
-                notify(obj,'ElectrodeSettingsChange')
-            end
+            
+            
             obj.NotifyTaskEnd('Add/Remove objects complete !');
         end
         
@@ -459,6 +480,9 @@ classdef BrainMap < handle
             cmapName=cmapName{listIdx};
             
             colormap(obj.axis_3d,lower(cmapName));
+            colormap(obj.axis_sagittal,lower(cmapName));
+            colormap(obj.axis_coronal,lower(cmapName));
+            colormap(obj.axis_axial,lower(cmapName));
         end
         function VolumeScaleSpinnerCallback(obj)
             min=obj.JVolumeMinSpinner.getValue();
@@ -634,6 +658,18 @@ classdef BrainMap < handle
                 volume=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
                 try
                     delete(volume.handles);
+                catch
+                end
+                try
+                    delete(volume.h_sagittal);
+                catch
+                end
+                try
+                    delete(volume.h_coronal);
+                catch
+                end
+                try
+                    delete(volume.h_axial);
                 catch
                 end
                 remove(obj.mapObj,['Volume',num2str(obj.SelectedVolume)]);
