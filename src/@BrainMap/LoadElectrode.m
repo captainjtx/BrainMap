@@ -32,9 +32,9 @@ if ~isfield(tmp,'map_sig')
 end
     
 
-num=obj.JFileLoadTree.addElectrode(fpath,true);
+num=obj.JFileLoadTree.getElectrodeID+1;
 
-mapval=Electrode;
+electrode=Electrode;
 
 for i=1:size(tmp.coor,1)
     userdat.ele=num;
@@ -45,38 +45,34 @@ for i=1:size(tmp.coor,1)
     if tmp.map_sig(i)==0
         col=tmp.color(i,:);
     else
-        col='w';
+        col=obj.ecolor;
     end
-    mapval.handles(i)=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
+    electrode.handles(i)=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
         'facecolor',col,'edgecolor','none','UserData',userdat,...
         'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
 end
 material dull;
 
-mapval.file=fpath;
-mapval.ind=num;
-mapval.coor=tmp.coor;
-mapval.radius=tmp.radius;
-mapval.thickness=tmp.thickness;
-mapval.color=tmp.color;
-mapval.norm=tmp.norm;
-mapval.checked=true;
-mapval.selected=ones(size(mapval.coor,1),1)*true;
-mapval.channame=tmp.channame;
-mapval.map=tmp.map;
-mapval.map_sig=tmp.map_sig;
-mapval.map_h=[];
-mapval.coor_interp=10;
-mapval.map_alpha=0.8;
-mapval.map_colormap='jet';
-mapval.F=[];
-mapval.radius_ratio=ones(size(mapval.coor,1),1);
-mapval.thickness_ratio=ones(size(mapval.coor,1),1);
+electrode.file=fpath;
+electrode.ind=num;
+electrode.coor=tmp.coor;
+electrode.radius=tmp.radius;
+electrode.thickness=tmp.thickness;
+electrode.color=tmp.color;
+electrode.norm=tmp.norm;
+electrode.checked=true;
+electrode.selected=ones(size(electrode.coor,1),1)*true;
+electrode.channame=tmp.channame;
+electrode.map=tmp.map;
+electrode.map_sig=tmp.map_sig;
 
-mapval=obj.redrawNewMap(mapval);
+electrode.radius_ratio=ones(size(electrode.coor,1),1);
+electrode.thickness_ratio=ones(size(electrode.coor,1),1);
 
-obj.mapObj([mapval.category,num2str(num)])=mapval;
+electrode=obj.redrawNewMap(electrode);
 
+obj.mapObj([electrode.category,num2str(num)])=electrode;
+obj.JFileLoadTree.addElectrode(fpath,true);
 end
 
 

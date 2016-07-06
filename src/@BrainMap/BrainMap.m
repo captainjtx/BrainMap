@@ -10,8 +10,11 @@ classdef BrainMap < handle
         toolpane
         
         SelectedElectrode
+        
         SelectedSurface
+        
         SelectedVolume
+        
     end
     
     properties
@@ -211,13 +214,9 @@ classdef BrainMap < handle
             end
             
             if regexp(id,'^Electrode')
-                val=str2double(id(10:end));
-                if isnan(val)
-                    val=[];
-                end
+                val=obj.mapObj(id);
             end
         end
-        
         
         function val=get.SelectedSurface(obj)
             id=char(obj.JFileLoadTree.getSelectedItem());
@@ -227,12 +226,12 @@ classdef BrainMap < handle
             end
             
             if regexp(id,'^Surface')
-                val=str2double(id(8:end));
-                if isnan(val)
-                    val=[];
-                end
+                val=obj.mapObj(id);
             end
         end
+
+        
+        
         function val=get.SelectedVolume(obj)
             id=char(obj.JFileLoadTree.getSelectedItem());
             val=[];
@@ -241,12 +240,10 @@ classdef BrainMap < handle
             end
             
             if regexp(id,'^Volume')
-                val=str2double(id(7:end));
-                if isnan(val)
-                    val=[];
-                end
+                val=obj.mapObj(id);
             end
         end
+        
         
         function val=get.cfg_name(obj)
             val=[obj.brainmap_path,'/db/cfg/brainmap.cfg'];
@@ -367,9 +364,14 @@ classdef BrainMap < handle
         end
         function RecenterCallback(obj)
             obj.NotifyTaskStart('Reset origin ...');
-            if ~isempty(obj.SelectedVolume)
-                vol=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
+            vol=obj.SelectedVolume;
+            surface=obj.SelectedSurface;
+            
+            if ~isempty(vol)
                 [center,~]=getVolumeCenter(vol.volume,vol.xrange,vol.yrange,vol.zrange);
+                camtarget(obj.axis_3d,center);
+            elseif ~isempty(surface)
+                center=mean(surface.vertices,1);
                 camtarget(obj.axis_3d,center);
             else
                 camtarget(obj.axis_3d,'auto');
@@ -407,6 +409,15 @@ classdef BrainMap < handle
                         set(mapval.h_axial,'visible','off');
                         mapval.checked=false;
                     end 
+                case 'Surface'
+                    if evt.ischecked
+                        set(mapval.handles,'visible','on');
+                        mapval.checked=true;
+                    else
+                        set(mapval.handles,'visible','off');
+                        mapval.checked=false;
+                    end 
+                    
             end
             
             
@@ -431,8 +442,7 @@ classdef BrainMap < handle
             set(handle(obj.JLight,'CallbackProperties'),'MousePressedCallback',@(h,e) LightOffCallback(obj));
         end
         
-        function NewElectrode(obj)
-        end
+        
         function NewSurface(obj)
         end
         function NewVolume(obj)
@@ -448,9 +458,9 @@ classdef BrainMap < handle
             
             obj.JSurfaceAlphaSlider.setValue(alpha);
             drawnow
-            if ~isempty(obj.SelectEvt)&&obj.SelectEvt.level==2
-                mapval=obj.mapObj(char(obj.SelectEvt.getKey()));
-                set(mapval.handles,'facealpha',alpha/100);
+            surface=obj.SelectedSurface;
+            if ~isempty(surface)
+                set(surface.handles,'facealpha',alpha/100);
             end
         end
         
@@ -459,9 +469,10 @@ classdef BrainMap < handle
             
             obj.JSurfaceAlphaSpinner.setValue(alpha);
             drawnow
-            if ~isempty(obj.SelectEvt)&&obj.SelectEvt.level==2
-                mapval=obj.mapObj(char(obj.SelectEvt.getKey()));
-                set(mapval.handles,'facealpha',alpha/100);
+            
+            surface=obj.SelectedSurface;
+            if ~isempty(surface)
+                set(surface.handles,'facealpha',alpha/100);
             end
         end
         
@@ -500,12 +511,10 @@ classdef BrainMap < handle
             newcol=uisetcolor(obj.ecolor,'Electrode');
             obj.JElectrodeColorBtn.setBackground(java.awt.Color(newcol(1),newcol(2),newcol(3)));
             
-            if ~isempty(obj.SelectedElectrode)
-                electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+            electrode=obj.SelectedElectrode;
+            if ~isempty(electrode)
                 set(electrode.handles(logical(electrode.selected)),'facecolor',newcol);
-                
                 electrode.color(logical(electrode.selected),:)=ones(sum(electrode.selected),1)*newcol;
-                obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
                 if electrode.ind==obj.electrode_settings.select_ele
                     notify(obj,'ElectrodeSettingsChange')
                 end
@@ -563,15 +572,13 @@ classdef BrainMap < handle
             obj.JMapAlphaSpinner.setValue(alpha);
             drawnow
             
-            if ~isempty(obj.SelectedElectrode)
-                electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+            electrode=obj.SelectedElectrode;
+            if ~isempty(electrode)
                 electrode.map_alpha=alpha/100;
                 
                 if is_handle_valid(electrode.map_h)
                     set(electrode.map_h,'FaceAlpha',alpha/100);
                 end
-                
-                obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
             end
         end
         function MapAlphaSpinnerCallback(obj)
@@ -579,15 +586,13 @@ classdef BrainMap < handle
             obj.JMapAlphaSlider.setValue(alpha);
             drawnow
             
-            if ~isempty(obj.SelectedElectrode)
-                electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+            electrode=obj.SelectedElectrode;
+            if ~isempty(electrode)
                 electrode.map_alpha=alpha/100;
                 
                 if is_handle_valid(electrode.map_h)
                     set(electrode.map_h,'FaceAlpha',alpha/100);
                 end
-                
-                obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)])=electrode;
             end
         end
         
@@ -625,8 +630,8 @@ classdef BrainMap < handle
         end
         
         function DeleteElectrode( obj )
-            if ~isempty(obj.SelectedElectrode)
-                electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+            electrode=obj.SelectedElectrode;
+            if ~isempty(electrode)
                 try
                     delete(electrode.handles);
                 catch
@@ -635,27 +640,27 @@ classdef BrainMap < handle
                     delete(electrode.map_h);
                 catch
                 end
-                remove(obj.mapObj,['Electrode',num2str(obj.SelectedElectrode)]);
+                remove(obj.mapObj,['Electrode',num2str(obj.SelectedElectrode.ind)]);
                 obj.JFileLoadTree.deleteSelectedNode();
             end
             
         end
         function DeleteSurface( obj )
-            if ~isempty(obj.SelectedSurface)
-                surface=obj.mapObj(['Surface',num2str(obj.SelectedSurface)]);
+            surface=obj.SelectedSurface;
+            if ~isempty(surface)
                 try
                     delete(surface.handles);
                 catch
                 end
-                remove(obj.mapObj,['Surface',num2str(obj.SelectedSurface)]);
+                remove(obj.mapObj,['Surface',num2str(obj.SelectedSurface.ind)]);
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end
         
         
         function DeleteVolume(obj)
-            if ~isempty(obj.SelectedVolume)
-                volume=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
+            volume=obj.SelectedVolume;
+            if ~isempty(volume)
                 try
                     delete(volume.handles);
                 catch
@@ -672,7 +677,7 @@ classdef BrainMap < handle
                     delete(volume.h_axial);
                 catch
                 end
-                remove(obj.mapObj,['Volume',num2str(obj.SelectedVolume)]);
+                remove(obj.mapObj,['Volume',num2str(obj.SelectedVolume.ind)]);
                 obj.JFileLoadTree.deleteSelectedNode();
             end
         end
@@ -686,17 +691,15 @@ classdef BrainMap < handle
             end
         end
         function SaveElectrode(obj)
-            ele=obj.SelectedElectrode;
-            if ~isempty(ele)
-                electrode=obj.mapObj(['Electrode',num2str(ele)]);
+            electrode=obj.SelectedElectrode;
+            if ~isempty(electrode)
                 electrode.save();
             end
         end
         
         function MapShowSigCallback(obj)
-            ele=obj.SelectedElectrode;
-            if ~isempty(ele)
-                electrode=obj.mapObj(['Electrode',num2str(ele)]);
+            electrode=obj.SelectedElectrode;
+            if ~isempty(electrode)
                 electrode=obj.redrawNewMap(electrode);
             end
         end
@@ -726,6 +729,7 @@ classdef BrainMap < handle
         VolumeRenderCallback(obj)
         MakeMenu(obj)
         ChangeLayout(obj,src)
+        NewElectrode(obj)
     end
     events
         ElectrodeSettingsChange

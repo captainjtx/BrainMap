@@ -1,14 +1,13 @@
 function ElectrodeRadiusRatioSpinnerCallback(obj)
 r=obj.JElectrodeRadiusRatioSpinner.getValue();
-
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     ind=find(electrode.selected);
     
     electrode.radius_ratio(ind)=r/100;
     for i=1:length(ind)
         userdat.name=electrode.channame{ind(i)};
-        userdat.ele=obj.SelectedElectrode;
+        userdat.ele=obj.SelectedElectrodeID;
         
         [faces,vertices] = createContact3D...
             (electrode.coor(ind(i),:),electrode.norm(ind(i),:),...

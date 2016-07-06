@@ -1,5 +1,5 @@
 function LoadSurface(obj)
-[filename,pathname]=uigetfile({'*.mat;*.dfd;*.surf','Data format (*,mat,*.dfs,*.surf)'},'Please select surface data');
+[filename,pathname]=uigetfile({'*.mat;*.dfs;*.surf','Data format (*,mat,*.dfs,*.surf)'},'Please select surface data');
 fpath=[pathname filename];
 if filename==0
     return;
@@ -42,6 +42,9 @@ else
 end
 
 axis(obj.axis_3d);
+
+mapval=Surface;
+
 mapval.handles=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
     'edgecolor','none','facecolor',[0.85 0.85 0.85],...
     'facealpha',1,'FaceLighting','gouraud');
@@ -54,8 +57,6 @@ num=obj.JFileLoadTree.addSurface(fpath,true);
 
 mapval.vertices=vertices;
 mapval.faces=faces;
-
-mapval.category='Surface';
 mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;
@@ -63,6 +64,7 @@ mapval.checked=true;
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 material dull
+RecenterCallback(obj);
 
 obj.NotifyTaskEnd('Surface load complete !');
 end

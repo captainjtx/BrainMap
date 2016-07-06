@@ -147,8 +147,10 @@ end
 if strcmpi(evt.category,'Electrode')&&evt.level==2
     electrode=obj.mapObj(char(evt.getKey()));
     electrode.selected=ones(size(electrode.coor,1),1)*true;
-    set(electrode.handles,'edgecolor','y');
-    obj.mapObj(char(evt.getKey()))=electrode;
+    try
+        set(electrode.handles,'edgecolor','y');
+    catch
+    end
     
     if electrode.ind==obj.electrode_settings.select_ele
         notify(obj,'ElectrodeSettingsChange')
@@ -161,7 +163,6 @@ else
             set(oldelectrode.handles,'edgecolor','none');
         catch
         end
-        obj.mapObj([char(evt.oldcategory),num2str(evt.oldind)])=oldelectrode;
         
         if oldelectrode.ind==obj.electrode_settings.select_ele
             notify(obj,'ElectrodeSettingsChange')

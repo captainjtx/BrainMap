@@ -1,11 +1,13 @@
 classdef Volume<handle
+    properties (Dependent)
+        category
+    end
     properties
         volume
         pixdim
         xrange
         yrange
         zrange
-        category
         file
         ind
         checked
@@ -16,8 +18,11 @@ classdef Volume<handle
     end
     
     methods
+        function val=get.category(obj)
+            val='Volume';
+        end
+        
         function obj=Volume()
-            obj.category='Volume';
         end
         
         function save(obj)

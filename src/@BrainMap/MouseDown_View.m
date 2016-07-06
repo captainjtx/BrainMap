@@ -79,7 +79,9 @@ if obj.JTogNewElectrode.isSelected()
     radius_ratio=obj.JElectrodeRadiusRatioSpinner.getValue()/100;
     thickness_ratio=obj.JElectrodeThicknessRatioSpinner.getValue()/100;
     %%
-    if isempty(obj.SelectedElectrode)
+    
+    electrode=obj.SelectedElectrode;
+    if isempty(electrode)
         %create a new electrode
         new_channame='1';
         
@@ -105,7 +107,6 @@ if obj.JTogNewElectrode.isSelected()
         electrode.map=nan;
         
     else
-        electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
         new_channame=num2str(size(electrode.coor,1)+1);
         
         electrode.coor=cat(1,electrode.coor,new_coor);

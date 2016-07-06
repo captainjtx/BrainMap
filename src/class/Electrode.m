@@ -1,7 +1,9 @@
 classdef Electrode<handle
     %Include properties for map and electrode
+    properties (Dependent)
+        category
+    end
     properties
-        category% must be electrode all the time, will eliminate in future
         file% full filename of the source
         ind% the unique monotonically increased identifier index
         coor% [N*3] coordinates of the electrodes
@@ -25,8 +27,13 @@ classdef Electrode<handle
     end
     
     methods
+        function val=get.category(obj)
+            val='Electrode';
+        end
         function obj=Electrode()
-            obj.category='Electrode';
+            obj.coor_interp=10;
+            obj.map_alpha=0.8;
+            obj.map_colormap='jet';
         end
         
         function save(obj)

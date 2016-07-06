@@ -83,6 +83,21 @@ public class FileLoadTree
     {
         return ElectrodeID;
     }
+    
+    public int getSurfaceID()
+    {
+        return SurfaceID;
+    }
+    
+    public int getVolumeID()
+    {
+        return VolumeID;
+    }
+    
+    public int getOthersID()
+    {
+        return OthersID;
+    }
     public JScrollPane buildfig()
     {
         tree=new JTree();

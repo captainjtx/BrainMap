@@ -1,6 +1,6 @@
 function MapSpinnerCallback(obj)
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     
     if is_handle_valid(electrode.map_h)
         cmin=obj.JMapMinSpinner.getValue();

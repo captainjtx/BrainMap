@@ -1,13 +1,12 @@
 function VolumeRenderCallback( obj )
 obj.NotifyTaskStart('Rendering volume ...');
-
-if ~isempty(obj.SelectedVolume)
-    mapval=obj.mapObj(['Volume',num2str(obj.SelectedVolume)]);
+volume=obj.SelectedVolume;
+if ~isempty(volume)
     
     if obj.smooth_sigma>0
-        img_vol=smooth3(mapval.volume,'gaussian',2*round(obj.smooth_sigma./mapval.pixdim/2)+1);
+        img_vol=smooth3(volume.volume,'gaussian',2*round(obj.smooth_sigma./volume.pixdim/2)+1);
     else
-        img_vol=mapval.volume;
+        img_vol=volume.volume;
     end
     
     % alpha=img_vol;
@@ -21,8 +20,8 @@ if ~isempty(obj.SelectedVolume)
     
     
     tmp=vol3d('cdata',img_vol,'texture','3D','Parent',obj.axis_3d,...
-        'XData',mapval.xrange,'YData',mapval.yrange,'ZData',mapval.zrange);
-    mapval.handles=tmp.handles;
+        'XData',volume.xrange,'YData',volume.yrange,'ZData',volume.zrange);
+    volume.handles=tmp.handles;
     
     axis vis3d
     axis equal off

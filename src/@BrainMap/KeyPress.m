@@ -17,29 +17,27 @@ elseif length(evt.Modifier)==1
     end
 end
 %**************************************************************************
-
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
-    
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     ind=find(electrode.selected);
     
     redraw_electrode=false;
     if isempty(evt.Modifier)
         if strcmpi(evt.Key,'leftarrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.002);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.002);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'rightarrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.002);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.002);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'uparrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.002,0);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.002,0);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'downarrow')
             electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.002,0);
+                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.002,0);
             redraw_electrode=true;
         end
     else
@@ -62,19 +60,19 @@ if ~isempty(obj.SelectedElectrode)
             elseif ismember('shift',evt.Modifier)
                 if strcmpi(evt.Key,'leftarrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.0004);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.0004);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'rightarrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.0004);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.0004);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'uparrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.0004,0);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.0004,0);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'downarrow')
                     electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.0004,0);
+                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.0004,0);
                     redraw_electrode=true;
                 end
             end

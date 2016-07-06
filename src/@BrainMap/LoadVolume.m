@@ -91,7 +91,6 @@ mapval.h_coronal=imagesc('Parent',obj.axis_coronal,'XData',xdata,'YData',zdata,'
 mapval.h_axial=imagesc('Parent',obj.axis_axial,'XData',ydata,'YData',zdata,'CData',squeeze(volume(round(end/2),:,:)));
 
 num=obj.JFileLoadTree.addVolume(fpath,true);
-mapval.category='Volume';
 mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;

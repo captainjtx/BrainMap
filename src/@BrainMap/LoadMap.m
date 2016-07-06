@@ -1,8 +1,7 @@
 function LoadMap(obj)
 import javax.swing.SpinnerNumberModel;
-
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     open_dir=fileparts(electrode.file);
     
     if exist([open_dir,'/app/spatial map'],'dir')==7
@@ -52,7 +51,7 @@ if ~isempty(obj.SelectedElectrode)
     electrode=obj.redrawNewMap(electrode);
     
     for i=1:size(electrode.coor,1)
-        userdat.ele=obj.SelectedElectrode;
+        userdat.ele=obj.SelectedElectrodeID;
         userdat.name=electrode.channame{i};
         
         [faces,vertices] = createContact3D...

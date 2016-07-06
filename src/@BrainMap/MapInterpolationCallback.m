@@ -1,9 +1,8 @@
 function MapInterpolationCallback( obj )
 obj.NotifyTaskStart('Start map interpolation ..');
 interp=obj.JMapInterpolationSpinner.getValue();
-
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     electrode.coor_interp=interp;
     if is_handle_valid(electrode.map_h)
         

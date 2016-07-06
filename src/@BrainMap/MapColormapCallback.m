@@ -1,8 +1,7 @@
 function MapColormapCallback( obj )
 obj.NotifyTaskStart('Refreshing map ...');
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
-    
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     listIdx = get(obj.MapColorMapPopup,'Value');
     
     cmapName=get(obj.MapColorMapPopup,'UserData');

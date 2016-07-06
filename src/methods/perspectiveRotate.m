@@ -9,8 +9,8 @@ function  new_coor= perspectiveRotate(a,coor,ud,lr)
 %By Tianxiao Jiang
 %Apr-15-2016
 
-viewpos=camtarget(a);
-origin=campos(a);
+origin=camtarget(a);
+viewpos=campos(a);
 Vup=camup(a);
 Vp=viewpos-origin;
 Vr=cross(Vup,Vp);

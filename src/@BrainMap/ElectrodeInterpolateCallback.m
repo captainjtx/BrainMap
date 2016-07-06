@@ -1,6 +1,6 @@
 function ElectrodeInterpolateCallback(obj)
-if ~isempty(obj.SelectedElectrode)
-    electrode=obj.mapObj(['Electrode',num2str(obj.SelectedElectrode)]);
+electrode=obj.SelectedElectrode;
+if ~isempty(electrode)
     ind=logical(electrode.selected);
     
     channame=['C',num2str(size(electrode,1)+1)];
