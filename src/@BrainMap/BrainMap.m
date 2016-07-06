@@ -57,6 +57,10 @@ classdef BrainMap < handle
         JElectrodeSpinClockwiseMenu
         JElectrodeSpinCounterClockwiseMenu
         
+        JElectrodeTiltMenu
+        JElectrodeTiltOutMenu
+        JElectrodeTiltInMenu
+        
         JElectrodeMoveSensitivity
         
         ViewMenu
@@ -225,7 +229,7 @@ classdef BrainMap < handle
                 return
             end
             
-            if regexp(id,'^Electrode')&&~strcmp(id,'Electrode')
+            if ~isempty(regexp(id,'^Electrode','ONCE'))&&~strcmp(id,'Electrode')
                 val=obj.mapObj(id);
             end
         end
@@ -237,7 +241,7 @@ classdef BrainMap < handle
                 return
             end
             
-            if regexp(id,'^Surface')&&~strcmp(id,'Surface')
+            if ~isempty(regexp(id,'^Surface','ONCE'))&&~strcmp(id,'Surface')
                 val=obj.mapObj(id);
             end
         end
@@ -249,7 +253,7 @@ classdef BrainMap < handle
                 return
             end
             
-            if regexp(id,'^Volume')&&~strcmp(id,'Volume')
+            if ~isempty(regexp(id,'^Volume','ONCE'))&&~strcmp(id,'Volume')
                 val=obj.mapObj(id);
             end
         end

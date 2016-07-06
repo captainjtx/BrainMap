@@ -40,6 +40,20 @@ switch opt
             evt.Modifier={'control'};
         end
         evt.Key='leftarrow';
+    case 9
+        if ismac
+            evt.Modifier={'command'};
+        elseif ispc
+            evt.Modifier={'control'};
+        end
+        evt.Key='j';
+    case 10
+        if ismac
+            evt.Modifier={'command'};
+        elseif ispc
+            evt.Modifier={'control'};
+        end
+        evt.Key='k';
 end
 % disp(opt)
 

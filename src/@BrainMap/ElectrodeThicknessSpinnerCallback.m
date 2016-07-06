@@ -8,7 +8,7 @@ if ~isempty(electrode)
     electrode.thickness(ind)=thick;
     for i=1:length(ind)
         userdat.name=electrode.channame{ind(i)};
-        userdat.ele=obj.SelectedElectrodeID;
+        userdat.ele=electrode.ind;
         
         [faces,vertices] = createContact3D...
             (electrode.coor(ind(i),:),electrode.norm(ind(i),:),...

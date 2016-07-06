@@ -124,7 +124,26 @@ elseif is_mac
     obj.JElectrodeSpinCounterClockwiseMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,ActionEvent.META_MASK)));
 end
 obj.JElectrodeSpinCounterClockwiseMenu.setToolTipText('Press Shift for fine adjustment');
+%%
+obj.JElectrodeTiltMenu=javaObjectEDT(JMenu('Tilt'));
+obj.JElectrodeTiltInMenu=javaObjectEDT(JMenuItem('Inward'));
+set(handle(obj.JElectrodeTiltInMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) MoveElectrode(obj,9));
+if is_pc
+    obj.JElectrodeTiltInMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_J,ActionEvent.CTRL_MASK)));
+elseif is_mac
+    obj.JElectrodeTiltInMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_J,ActionEvent.META_MASK)));
+end
+obj.JElectrodeTiltInMenu.setToolTipText('Press Shift for fine adjustment');
 
+obj.JElectrodeTiltOutMenu=javaObjectEDT(JMenuItem('Outward'));
+set(handle(obj.JElectrodeTiltOutMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) MoveElectrode(obj,10));
+if is_pc
+    obj.JElectrodeTiltOutMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_K,ActionEvent.CTRL_MASK)));
+elseif is_mac
+    obj.JElectrodeTiltOutMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_K,ActionEvent.META_MASK)));
+end
+obj.JElectrodeTiltOutMenu.setToolTipText('Press Shift for fine adjustment');
+%%
 obj.JElectrodeMoveSensitivity=javaObjectEDT(JMenuItem('Sensitivity'));
 set(handle(obj.JElectrodeMoveSensitivity,'CallbackProperties'),'MousePressedCallback',@(h,e) MoveElectrodeSensitivity(obj));
 
@@ -228,6 +247,10 @@ obj.JElectrodePushPullMenu.add(obj.JElectrodePullOutMenu);
 obj.JElectrodeMenu.add(obj.JElectrodeSpinMenu);
 obj.JElectrodeSpinMenu.add(obj.JElectrodeSpinClockwiseMenu);
 obj.JElectrodeSpinMenu.add(obj.JElectrodeSpinCounterClockwiseMenu);
+
+obj.JElectrodeMenu.add(obj.JElectrodeTiltMenu);
+obj.JElectrodeTiltMenu.add(obj.JElectrodeTiltInMenu);
+obj.JElectrodeTiltMenu.add(obj.JElectrodeTiltOutMenu);
 
 obj.JElectrodeMenu.addSeparator();
 obj.JElectrodeMenu.add(obj.JElectrodeMoveSensitivity);
