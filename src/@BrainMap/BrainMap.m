@@ -48,12 +48,16 @@ classdef BrainMap < handle
         JElectrodeRotateRightMenu
         JElectrodeRotateUpMenu
         JElectrodeRotateDownMenu
+        
         JElectrodePushPullMenu
         JElectrodePullOutMenu
         JElectrodePushInMenu
+        
         JElectrodeSpinMenu
         JElectrodeSpinClockwiseMenu
         JElectrodeSpinCounterClockwiseMenu
+        
+        JElectrodeMoveSensitivity
         
         ViewMenu
         JViewMenu
@@ -188,6 +192,14 @@ classdef BrainMap < handle
         
         cmapList
         cfg
+        
+        move_sensitivity
+        
+        grid_col
+        grid_row
+        grid_r
+        grid_spacing
+        grid_thickness
     end
     
     methods
@@ -213,7 +225,7 @@ classdef BrainMap < handle
                 return
             end
             
-            if regexp(id,'^Electrode')
+            if regexp(id,'^Electrode')&&~strcmp(id,'Electrode')
                 val=obj.mapObj(id);
             end
         end
@@ -225,12 +237,10 @@ classdef BrainMap < handle
                 return
             end
             
-            if regexp(id,'^Surface')
+            if regexp(id,'^Surface')&&~strcmp(id,'Surface')
                 val=obj.mapObj(id);
             end
         end
-
-        
         
         function val=get.SelectedVolume(obj)
             id=char(obj.JFileLoadTree.getSelectedItem());
@@ -239,7 +249,7 @@ classdef BrainMap < handle
                 return
             end
             
-            if regexp(id,'^Volume')
+            if regexp(id,'^Volume')&&~strcmp(id,'Volume')
                 val=obj.mapObj(id);
             end
         end
@@ -283,6 +293,13 @@ classdef BrainMap < handle
             obj.cmax=1;
             
             obj.smooth_sigma=0;
+            obj.move_sensitivity=1;
+            
+            obj.grid_col=12;
+            obj.grid_row=10;
+            obj.grid_r=0.6;
+            obj.grid_spacing=4;
+            obj.grid_thickness=0.4;
         end
         
         function OnClose(obj)
@@ -730,6 +747,7 @@ classdef BrainMap < handle
         MakeMenu(obj)
         ChangeLayout(obj,src)
         NewElectrode(obj)
+        MoveElectrodeSensitivity(obj)
     end
     events
         ElectrodeSettingsChange

@@ -53,7 +53,7 @@ axis vis3d
 
 obj.light=camlight(obj.light,'headlight');
 
-num=obj.JFileLoadTree.addSurface(fpath,true);
+num=obj.JFileLoadTree.getSurfaceID()+1;
 
 mapval.vertices=vertices;
 mapval.faces=faces;
@@ -65,6 +65,7 @@ obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 material dull
 RecenterCallback(obj);
+obj.JFileLoadTree.addSurface(fpath,true);
 
 obj.NotifyTaskEnd('Surface load complete !');
 end

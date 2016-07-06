@@ -90,7 +90,7 @@ mapval.h_sagittal=imagesc('Parent',obj.axis_sagittal,'XData',xdata,'YData',ydata
 mapval.h_coronal=imagesc('Parent',obj.axis_coronal,'XData',xdata,'YData',zdata,'CData',squeeze(volume(:,round(end/2),:)));
 mapval.h_axial=imagesc('Parent',obj.axis_axial,'XData',ydata,'YData',zdata,'CData',squeeze(volume(round(end/2),:,:)));
 
-num=obj.JFileLoadTree.addVolume(fpath,true);
+num=obj.JFileLoadTree.getVolumeID()+1;
 mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;
@@ -99,6 +99,7 @@ mapval.checked=true;
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 VolumeColormapCallback(obj);
+obj.JFileLoadTree.addVolume(fpath,true);
 obj.NotifyTaskEnd('Volume load complete !');
 end
 

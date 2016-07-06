@@ -14,20 +14,20 @@ end
 
 tmp=load(fpath,'-mat');
 
-if ~isfield(tmp,'norm')
+if ~isfield(tmp,'norm')||isempty(tmp.norm)
     tmp.norm=tmp.coor;
 end
 
-if ~isfield(tmp,'channame')
+if ~isfield(tmp,'channame')||isempty(tmp.channame)
     tmp.channame=num2cell(1:size(tmp.coor,1));
     tmp.channame=cellfun(@num2str,tmp.channame,'UniformOutput',false);
 end
 
-if ~isfield(tmp,'map')
+if ~isfield(tmp,'map')||isempty(tmp.map)
     tmp.map=ones(size(tmp.coor,1),1)*nan;
 end
 
-if ~isfield(tmp,'map_sig')
+if ~isfield(tmp,'map_sig')||isempty(tmp.map_sig)
     tmp.map_sig=zeros(size(tmp.coor,1),1);
 end
     
@@ -69,7 +69,9 @@ electrode.map_sig=tmp.map_sig;
 electrode.radius_ratio=ones(size(electrode.coor,1),1);
 electrode.thickness_ratio=ones(size(electrode.coor,1),1);
 
-electrode=obj.redrawNewMap(electrode);
+if any(~isnan(electrode.map))
+    electrode=obj.redrawNewMap(electrode);
+end
 
 obj.mapObj([electrode.category,num2str(num)])=electrode;
 obj.JFileLoadTree.addElectrode(fpath,true);

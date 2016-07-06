@@ -19,60 +19,73 @@ end
 %**************************************************************************
 electrode=obj.SelectedElectrode;
 if ~isempty(electrode)
-    ind=find(electrode.selected);
+    sel_ind=find(electrode.selected);
+    mov_ind=find(electrode.selected);
     
     redraw_electrode=false;
+    
+    center=mean(electrode.coor(sel_ind,:),1);
     if isempty(evt.Modifier)
         if strcmpi(evt.Key,'leftarrow')
-            electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.002);
+            electrode.coor(sel_ind,:)=...
+                perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),0,0.02*obj.move_sensitivity);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'rightarrow')
-            electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.002);
+            electrode.coor(sel_ind,:)=...
+                perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),0,-0.02*obj.move_sensitivity);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'uparrow')
-            electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.002,0);
+            electrode.coor(sel_ind,:)=...
+                perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),0.02*obj.move_sensitivity,0);
             redraw_electrode=true;
         elseif strcmpi(evt.Key,'downarrow')
-            electrode.coor(ind,:)=...
-                perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.002,0);
+            electrode.coor(sel_ind,:)=...
+                perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),-0.02*obj.move_sensitivity,0);
             redraw_electrode=true;
         end
     else
         if length(evt.Modifier)==1
             if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
                 if strcmpi(evt.Key,'uparrow')
-                    electrode.coor(ind,:)=axialTranslate(electrode.coor(ind,:),camtarget(obj.axis_3d),0.025);
+                    electrode.coor(sel_ind,:)=axialTranslate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),0.025*obj.move_sensitivity);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'downarrow')
-                    electrode.coor(ind,:)=axialTranslate(electrode.coor(ind,:),camtarget(obj.axis_3d),-0.025);
+                    electrode.coor(sel_ind,:)=axialTranslate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),-0.025*obj.move_sensitivity);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'leftarrow')
-                    electrode.coor(ind,:) = selfRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),0.06);
+                    electrode.coor(sel_ind,:) = selfRotate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),0.06*obj.move_sensitivity);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'rightarrow')
-                    electrode.coor(ind,:) = selfRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),-0.06);
+                    electrode.coor(sel_ind,:) = selfRotate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),-0.06*obj.move_sensitivity);
+                    redraw_electrode=true;
+                elseif strcmpi(evt.Key,'j')
+                    %tilt in
+                    electrode.coor=tilt(electrode.coor,center,camtarget(obj.axis_3d)-center,-0.06*obj.move_sensitivity);
+                    mov_ind=1:size(electrode.coor,1);
+                    redraw_electrode=true;
+                elseif strcmpi(evt.Key,'k')
+                    %tilt out
+                    electrode.coor=tilt(electrode.coor,center,camtarget(obj.axis_3d)-center,0.06*obj.move_sensitivity);
+                    mov_ind=1:size(electrode.coor,1);
                     redraw_electrode=true;
                 end
                 
             elseif ismember('shift',evt.Modifier)
                 if strcmpi(evt.Key,'leftarrow')
-                    electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,0.0004);
+                    electrode.coor(sel_ind,:)=...
+                        perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),0,0.004*obj.move_sensitivity);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'rightarrow')
-                    electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0,-0.0004);
+                    electrode.coor(sel_ind,:)=...
+                        perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),0,-0.004*obj.move_sensitivity);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'uparrow')
-                    electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),-0.0004,0);
+                    electrode.coor(sel_ind,:)=...
+                        perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),0.004*obj.move_sensitivity,0);
                     redraw_electrode=true;
                 elseif strcmpi(evt.Key,'downarrow')
-                    electrode.coor(ind,:)=...
-                        perspectiveRotate(obj.axis_3d,electrode.coor(ind,:),0.0004,0);
+                    electrode.coor(sel_ind,:)=...
+                        perspectiveRotate(obj.axis_3d,electrode.coor(sel_ind,:),-0.004*obj.move_sensitivity,0);
                     redraw_electrode=true;
                 end
             end
@@ -80,16 +93,26 @@ if ~isempty(electrode)
             if (ismember('command',evt.Modifier)&&ismac)||(ismember('control',evt.Modifier)&&ispc)
                 if ismember('shift',evt.Modifier)
                     if strcmpi(evt.Key,'uparrow')
-                        electrode.coor(ind,:)=axialTranslate(electrode.coor(ind,:),camtarget(obj.axis_3d),0.005);
+                        electrode.coor(sel_ind,:)=axialTranslate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),0.005*obj.move_sensitivity);
                         redraw_electrode=true;
                     elseif strcmpi(evt.Key,'downarrow')
-                        electrode.coor(ind,:)=axialTranslate(electrode.coor(ind,:),camtarget(obj.axis_3d),-0.005);
+                        electrode.coor(sel_ind,:)=axialTranslate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),-0.005*obj.move_sensitivity);
                         redraw_electrode=true;
                     elseif strcmpi(evt.Key,'leftarrow')
-                        electrode.coor(ind,:) = selfRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),0.02);
+                        electrode.coor(sel_ind,:) = selfRotate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),0.02*obj.move_sensitivity);
                         redraw_electrode=true;
                     elseif strcmpi(evt.Key,'rightarrow')
-                        electrode.coor(ind,:) = selfRotate(electrode.coor(ind,:),camtarget(obj.axis_3d),-0.02);
+                        electrode.coor(sel_ind,:) = selfRotate(electrode.coor(sel_ind,:),camtarget(obj.axis_3d),-0.02*obj.move_sensitivity);
+                        redraw_electrode=true;
+                    elseif strcmpi(evt.Key,'j')
+                        %tilt in
+                        electrode.coor=tilt(electrode.coor,center,camtarget(obj.axis_3d)-center,-0.02*obj.move_sensitivity);
+                        mov_ind=1:size(electrode.coor,1);
+                        redraw_electrode=true;
+                    elseif strcmpi(evt.Key,'k')
+                        %tilt out
+                        electrode.coor=tilt(electrode.coor,center,camtarget(obj.axis_3d)-center,0.02*obj.move_sensitivity);
+                        mov_ind=1:size(electrode.coor,1);
                         redraw_electrode=true;
                     end
                 end
@@ -99,18 +122,24 @@ if ~isempty(electrode)
     end
     
     if redraw_electrode
-        for i=1:length(ind)
-            userdat.name=electrode.channame{ind(i)};
+        for i=1:length(mov_ind)
+            userdat.name=electrode.channame{mov_ind(i)};
             userdat.ele=electrode.ind;
             
-            electrode.norm(ind(i),:)=electrode.coor(ind(i),:)-camtarget(obj.axis_3d);
-            [faces,vertices] = createContact3D(electrode.coor(ind(i),:),electrode.norm(ind(i),:),electrode.radius(ind(i)),electrode.thickness(ind(i)));
+            electrode.norm(mov_ind(i),:)=electrode.coor(mov_ind(i),:)-camtarget(obj.axis_3d);
+            [faces,vertices] = createContact3D(electrode.coor(mov_ind(i),:),electrode.norm(mov_ind(i),:),electrode.radius(mov_ind(i)),electrode.thickness(mov_ind(i)));
             try
-            delete(electrode.handles(ind(i)));
+            delete(electrode.handles(mov_ind(i)));
             catch
             end
-            electrode.handles(ind(i))=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
-                'facecolor',electrode.color(ind(i),:),'edgecolor','y','UserData',userdat,...
+            
+            if ismember(mov_ind(i),sel_ind)
+                edge_col='y';
+            else
+                edge_col='none';
+            end
+            electrode.handles(mov_ind(i))=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
+                'facecolor',electrode.color(mov_ind(i),:),'edgecolor',edge_col,'UserData',userdat,...
                 'ButtonDownFcn',@(src,evt) ClickOnElectrode(obj,src,evt),'facelighting','gouraud');
         end
         material dull;

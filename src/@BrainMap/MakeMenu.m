@@ -72,7 +72,6 @@ set(handle(obj.JElectrodeRotateLeftMenu,'CallbackProperties'),'MousePressedCallb
 obj.JElectrodeRotateLeftMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,0)));
 obj.JElectrodeRotateLeftMenu.setToolTipText('Press Shift for fine adjustment');
 
-
 obj.JElectrodeRotateRightMenu=javaObjectEDT(JMenuItem('Right'));
 set(handle(obj.JElectrodeRotateRightMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) MoveElectrode(obj,2));
 obj.JElectrodeRotateRightMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,0)));
@@ -126,8 +125,10 @@ elseif is_mac
 end
 obj.JElectrodeSpinCounterClockwiseMenu.setToolTipText('Press Shift for fine adjustment');
 
-obj.JViewMenu=javaObjectEDT(JMenu('View'));
+obj.JElectrodeMoveSensitivity=javaObjectEDT(JMenuItem('Sensitivity'));
+set(handle(obj.JElectrodeMoveSensitivity,'CallbackProperties'),'MousePressedCallback',@(h,e) MoveElectrodeSensitivity(obj));
 
+obj.JViewMenu=javaObjectEDT(JMenu('View'));
 
 obj.JViewLayoutMenu=javaObjectEDT(JMenu('Layout'));
 
@@ -228,6 +229,9 @@ obj.JElectrodeMenu.add(obj.JElectrodeSpinMenu);
 obj.JElectrodeSpinMenu.add(obj.JElectrodeSpinClockwiseMenu);
 obj.JElectrodeSpinMenu.add(obj.JElectrodeSpinCounterClockwiseMenu);
 
+obj.JElectrodeMenu.addSeparator();
+obj.JElectrodeMenu.add(obj.JElectrodeMoveSensitivity);
+
 jMenuBar.add(obj.JViewMenu);
 obj.JViewMenu.add(obj.JViewLayoutMenu);
 obj.JViewLayoutMenu.add(obj.JViewLayoutOneMenu);
@@ -265,6 +269,7 @@ group3.add((obj.JViewInterfaceSurfaceMenu));
 group3.add((obj.JViewInterfaceElectrodeMenu));
 
 obj.JViewMenu.add(obj.JViewCameraMenu);
+
 try
 delete(bmp)
 catch
