@@ -48,10 +48,10 @@ mapval=Surface;
 mapval.handles=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
     'edgecolor','none','facecolor',[0.85 0.85 0.85],...
     'facealpha',1,'FaceLighting','gouraud');
-hold on
 axis vis3d
 
 obj.light=camlight(obj.light,'headlight');
+material dull
 
 num=obj.JFileLoadTree.getSurfaceID()+1;
 
@@ -62,10 +62,9 @@ mapval.ind=num;
 mapval.checked=true;
 
 obj.mapObj([mapval.category,num2str(num)])=mapval;
-
-material dull
-RecenterCallback(obj);
 obj.JFileLoadTree.addSurface(fpath,true);
+
+RecenterCallback(obj);
 
 obj.NotifyTaskEnd('Surface load complete !');
 end

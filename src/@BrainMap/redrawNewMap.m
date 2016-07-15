@@ -23,36 +23,41 @@ electrode.F=F;
 fcn=str2func(electrode.map_colormap);
 cmap=fcn(64);
 
-if ~is_handle_valid(electrode.map_h)
-    newpos=interp_tri(pos,electrode.coor_interp);
-    
-    newmap=F(newpos(:,1),newpos(:,2),newpos(:,3));
-    
-    tri=delaunay(newpos(:,1),newpos(:,2));
-    
-    cmapv=zeros(length(newmap),3);
-    for i=1:length(newmap)
-        index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
-        cmapv(i,:)=cmap(index,:);
-    end
-    
-    electrode.map_h=patch('parent',obj.axis_3d,'Faces',tri,'Vertices',newpos,'facelighting','gouraud',...
-        'FaceVertexCData',cmapv,'FaceColor','interp','EdgeColor','none','FaceAlpha',electrode.map_alpha,...
-        'UserData',newmap);
-    material dull
-else
-    newpos=get(electrode.map_h,'Vertices');
-    
-    newmap=F(newpos(:,1),newpos(:,2),newpos(:,3));
-    
-    cmapv=zeros(length(newmap),3);
-    for i=1:length(newmap)
-        index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
-        cmapv(i,:)=cmap(index,:);
-    end
-    
-    set(electrode.map_h,'UserData',newmap,'FaceVertexCData',cmapv);
+% if ~is_handle_valid(electrode.map_h)
+
+try
+    delete(electrode.map_h)
+catch
 end
+newpos=interp_tri(pos,electrode.coor_interp);
+
+newmap=F(newpos(:,1),newpos(:,2),newpos(:,3));
+
+tri=delaunay(newpos(:,1),newpos(:,2));
+
+cmapv=zeros(length(newmap),3);
+for i=1:length(newmap)
+    index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
+    cmapv(i,:)=cmap(index,:);
+end
+
+electrode.map_h=patch('parent',obj.axis_3d,'Faces',tri,'Vertices',newpos,'facelighting','gouraud',...
+    'FaceVertexCData',cmapv,'FaceColor','interp','EdgeColor','none','FaceAlpha',electrode.map_alpha,...
+    'UserData',newmap);
+material dull
+% else
+%     newpos=get(electrode.map_h,'Vertices');
+%
+%     newmap=F(newpos(:,1),newpos(:,2),newpos(:,3));
+%
+%     cmapv=zeros(length(newmap),3);
+%     for i=1:length(newmap)
+%         index=min(max(1,round((newmap(i)-cmin)/(cmax-cmin)*(size(cmap,1)-1))+1),size(cmap,1));
+%         cmapv(i,:)=cmap(index,:);
+%     end
+%
+%     set(electrode.map_h,'UserData',newmap,'FaceVertexCData',cmapv);
+% end
 
 % VolumeColormapCallback(obj);
 end

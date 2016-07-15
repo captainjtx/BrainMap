@@ -51,7 +51,7 @@ if ~isempty(electrode)
     electrode=obj.redrawNewMap(electrode);
     
     for i=1:size(electrode.coor,1)
-        userdat.ele=obj.SelectedElectrodeID;
+        userdat.ele=electrode.ind;
         userdat.name=electrode.channame{i};
         
         [faces,vertices] = createContact3D...

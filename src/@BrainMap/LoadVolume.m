@@ -95,11 +95,11 @@ mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;
 
-
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 VolumeColormapCallback(obj);
 obj.JFileLoadTree.addVolume(fpath,true);
+VolumeRenderCallback(obj);
 obj.NotifyTaskEnd('Volume load complete !');
 end
 

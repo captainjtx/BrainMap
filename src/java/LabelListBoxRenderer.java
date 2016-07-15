@@ -83,14 +83,14 @@ public class LabelListBoxRenderer extends JLabel implements ListCellRenderer
             // Selected cell item
 			setBackground(list.getSelectionBackground());
 //             setForeground(list.getSelectionForeground());
-            label="<html>"+"<div style=\"color:white; width:200px; font-size:8px \">"+name_str+"</div>"+
-            "<div style=\"color:white; width:2000px; font-size:7px \">"+path_str+"</div>"+"</html>";
+            label="<html>"+"<div style=\"color:white; width:180px; font-size:8px \">"+name_str+"</div>"+
+            "<div style=\"color:white; width:180px; font-size:6px \">"+path_str+"</div>"+"</html>";
 		} else {
 			// Unselected cell item
             setBackground(list.getBackground());
 //             setForeground(list.getForeground());
-            label="<html>"+"<div style=\"color:#232323; width:200px; font-size:8px \">"+name_str+"</div>"+
-            "<div style=\"color:#545454; width:200px; font-size:7px \">"+path_str+"</div>"+"</html>";
+            label="<html>"+"<div style=\"color:#232323; width:180px; font-size:8px \">"+name_str+"</div>"+
+            "<div style=\"color:#545454; width:180px; font-size:6px \">"+path_str+"</div>"+"</html>";
 		}
         try {
             if(FileType[index]==1)

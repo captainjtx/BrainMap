@@ -1,4 +1,4 @@
-function VolumeRenderCallback( obj )
+function VolumeRenderCallback(obj)
 obj.NotifyTaskStart('Rendering volume ...');
 volume=obj.SelectedVolume;
 if ~isempty(volume)
