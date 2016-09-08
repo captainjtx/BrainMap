@@ -30,15 +30,14 @@ elseif strcmp(type,'.pial')
         %set(obj.info,'string','Reading surface data...');
         [vertices, faces] = mne_read_surface(fpath);
         %set(obj.info,'string','Reducing mesh...');
-        if size(vertices,1)>2000000
-            [faces,vertices]=reducepatch(faces,vertices,0.1);
-        elseif size(vertices,1)>1000000
-            [faces,vertices]=reducepatch(faces,vertices,0.5);
-        end
-
 else
     errordlg('Unrecognized data.', 'Wrong data format');
     return
+end
+downsample=obj.JSurfaceDownsampleSpinner.getValue()/100;
+
+if smooth<1
+    [faces,vertices]=reducepatch(faces,vertices,downsample);
 end
 
 axis(obj.axis_3d);
@@ -60,6 +59,7 @@ mapval.faces=faces;
 mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;
+mapval.smoothness=downsample;
 
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 obj.JFileLoadTree.addSurface(fpath,true);

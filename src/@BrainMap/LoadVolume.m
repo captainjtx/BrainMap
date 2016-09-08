@@ -20,7 +20,7 @@ end
 
 obj.NotifyTaskStart('Loading volume ...');
             
-if strcmp(ext,'.nii')
+if ismember(ext,{'.nii','.mgz','.mgh','.bhdr','.hdr','.img','.nii.gz'})
     out= MRIread(fpath);
     volume=out.vol;
 

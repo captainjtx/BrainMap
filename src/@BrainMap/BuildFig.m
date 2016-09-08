@@ -85,19 +85,30 @@ obj.BuildIOBar();
 %suface tool pane==========================================================
 obj.surfacetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73]);
 %%
+%surface downsample
+uicontrol('parent',obj.surfacetoolpane,'style','text','units','normalized','position',[0,0.92,0.5,0.06],...
+    'string','Surface downsample (%)','horizontalalignment','left','fontunits','normalized','fontsize',0.5);
+
+model = javaObjectEDT(SpinnerNumberModel(100,0,100,10));  
+obj.JSurfaceDownsampleSpinner =javaObjectEDT(JSpinner(model));
+[jh,gh]=javacomponent(obj.JSurfaceDownsampleSpinner,[0,0,1,1],obj.surfacetoolpane);
+set(gh,'Units','Norm','Position',[0.75,0.92,0.22,0.06]);
+set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) SurfaceDownsampleSpinnerCallback(obj));
+%%
 %surface opacity
-uicontrol('parent',obj.surfacetoolpane,'style','text','units','normalized','position',[0,0.92,0.25,0.06],...
+uicontrol('parent',obj.surfacetoolpane,'style','text','units','normalized','position',[0,0.84,0.25,0.06],...
     'string','Opacity(%)','horizontalalignment','left','fontunits','normalized','fontsize',0.5);
 obj.JSurfaceAlphaSlider=javaObjectEDT(JSlider(JSlider.HORIZONTAL,0,100,90));
 [jh,gh]=javacomponent(obj.JSurfaceAlphaSlider,[0,0,1,1],obj.surfacetoolpane);
-set(gh,'Units','Norm','Position',[0.25,0.9,0.45,0.1]);
+set(gh,'Units','Norm','Position',[0.25,0.82,0.45,0.1]);
 set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) SurfaceAlphaSliderCallback(obj));
 
 model = javaObjectEDT(SpinnerNumberModel(90,0,100,10));  
 obj.JSurfaceAlphaSpinner =javaObjectEDT(JSpinner(model));
 [jh,gh]=javacomponent(obj.JSurfaceAlphaSpinner,[0,0,1,1],obj.surfacetoolpane);
-set(gh,'Units','Norm','Position',[0.75,0.92,0.22,0.06]);
+set(gh,'Units','Norm','Position',[0.75,0.84,0.22,0.06]);
 set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) SurfaceAlphaSpinnerCallback(obj));
+
 %%
 %volume tool pane==========================================================
 

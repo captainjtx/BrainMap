@@ -12,6 +12,8 @@ classdef Surface<handle
         ind
         checked
         handles
+        
+        downsample
     end
     
     methods
@@ -19,6 +21,7 @@ classdef Surface<handle
             val='Surface';
         end
         function obj=Surface()
+            obj.downsample=1;
         end
     end
     

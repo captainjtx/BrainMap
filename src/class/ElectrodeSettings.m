@@ -16,14 +16,10 @@ classdef ElectrodeSettings<handle
     properties(Dependent)
         valid
         Data
-        ele_key
     end
     
     methods
         
-        function val=get.ele_key(obj)
-            val=['Electrode',num2str(obj.select_ele)];
-        end
         function set.Data(obj,val)
             set(obj.Table,'Data',val);
         end
@@ -53,7 +49,7 @@ classdef ElectrodeSettings<handle
                 return
             end
             
-            electrode=obj.bm.mapObj(['Electrode',num2str(obj.bm.SelectedElectrode)]);
+            electrode=obj.bm.SelectedElectrode;
             
             obj.select_ele=obj.bm.SelectedElectrode;
             
@@ -132,7 +128,7 @@ classdef ElectrodeSettings<handle
             indices=evt.Indices;
             %click on the color column
             if size(indices,1)==1&&indices(1,2)==7
-                electrode=obj.bm.mapObj(obj.ele_key);
+                electrode=obj.select_ele;
                 color=uisetcolor(electrode.color(indices(1),:),electrode.channame{indices(1)});
                 electrode.color(indices(1),:)=color;
                 obj.Data{indices(1),7}=ElectrodeSettings.colorgen(color,'');
@@ -144,7 +140,7 @@ classdef ElectrodeSettings<handle
         function cellEdit(obj,src,evt)
             indices=evt.Indices;
             if size(indices,1)==1
-                electrode=obj.bm.mapObj(obj.ele_key);
+                electrode=obj.select_ele;
                 switch indices(1,2)
                     case 1
                         electrode.selected(indices(1))=evt.NewData;
@@ -218,7 +214,7 @@ classdef ElectrodeSettings<handle
         function newElectrode(obj)
         end
         function deleteElectrode(obj)
-            electrode=obj.bm.mapObj(obj.ele_key);
+            electrode=obj.select_ele;
             ind=logical(electrode.selected);
             
             electrode.remove(ind);
@@ -228,7 +224,7 @@ classdef ElectrodeSettings<handle
         
         function updateData(obj)
             if obj.valid
-                electrode=obj.bm.mapObj(obj.ele_key);
+                electrode=obj.select_ele;
                 data=cell(size(electrode.coor,1),8);
                 for i=1:size(electrode.coor,1)
                     data{i,1}=logical(electrode.selected(i));
@@ -246,7 +242,7 @@ classdef ElectrodeSettings<handle
         end
         
         function unselectElectrode(obj)
-            electrode=obj.bm.mapObj(obj.ele_key);
+            electrode=obj.select_ele;
             electrode.selected=ones(size(electrode.selected))*false;
             
             set(electrode.handles,'edgecolor','none');

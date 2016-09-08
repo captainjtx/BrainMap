@@ -137,6 +137,9 @@ classdef BrainMap < handle
         
         JSurfaceAlphaSpinner
         JSurfaceAlphaSlider
+        
+        JSurfaceDownsampleSpinner
+        
         VolumeColorMapPopup
         
         JVolumeMinSpinner
@@ -449,6 +452,7 @@ classdef BrainMap < handle
             obj.JLight.setIcon(obj.IconLightOn);
             obj.JLight.setToolTipText('Light on');
             try
+                delete(obj.light);
                 delete(findobj(obj.axis_3d,'type','light'));
             catch
             end
@@ -461,6 +465,7 @@ classdef BrainMap < handle
             obj.JLight.setToolTipText('Light off');
             obj.light=camlight('headlight','infinite');
             set(handle(obj.JLight,'CallbackProperties'),'MousePressedCallback',@(h,e) LightOffCallback(obj));
+            material dull;
         end
         
         
@@ -495,6 +500,33 @@ classdef BrainMap < handle
             if ~isempty(surface)
                 set(surface.handles,'facealpha',alpha/100);
             end
+        end
+        
+        function SurfaceDownsampleSpinnerCallback(obj)
+            obj.NotifyTaskStart('Reduce surface patches...');
+            
+            downsample=obj.JSurfaceDownsampleSpinner.getValue();        
+            drawnow
+            
+            downsample=downsample/100;
+            
+            surface=obj.SelectedSurface;
+            if ~isempty(surface)
+                [faces,vertices]=reducepatch(surface.faces,surface.vertices,downsample);
+                axis(obj.axis_3d);
+                
+                alpha=get(surface.handles,'facealpha');
+                delete(surface.handles);
+                
+                surface.handles=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
+                    'edgecolor','none','facecolor',[0.85 0.85 0.85],...
+                    'facealpha',alpha,'FaceLighting','gouraud');
+                surface.downsample=downsample;
+                material dull
+%                 axis vis3d
+            end
+            
+            obj.NotifyTaskStart('Surface downsample complete !');
         end
         
         function ChangeCanvasColor(obj)
