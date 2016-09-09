@@ -36,7 +36,7 @@ else
 end
 downsample=obj.JSurfaceDownsampleSpinner.getValue()/100;
 
-if smooth<1
+if downsample<1
     [faces,vertices]=reducepatch(faces,vertices,downsample);
 end
 
@@ -59,7 +59,7 @@ mapval.faces=faces;
 mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;
-mapval.smoothness=downsample;
+mapval.downsample=downsample;
 
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 obj.JFileLoadTree.addSurface(fpath,true);

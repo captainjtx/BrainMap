@@ -21,12 +21,12 @@ import java.awt.Dimension;
 
 public class LabelListBoxRenderer extends JLabel implements ListCellRenderer
 {
-    
-    private ImageIcon cds_icon;
-    private ImageIcon noncds_icon;
-    
-    private int[] FileType;
-    
+
+	private ImageIcon cds_icon;
+	private ImageIcon noncds_icon;
+
+	private int[] FileType;
+
 	private final Hashtable<String,ImageIcon> iconsCache = new Hashtable<String,ImageIcon>();
     
 
