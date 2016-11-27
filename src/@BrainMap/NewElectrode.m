@@ -4,6 +4,7 @@ viewpos=campos(obj.axis_3d);
 
 allkeys=keys(obj.mapObj);
 
+R=0.15/2;
 for i=1:length(allkeys)
     map=obj.mapObj(allkeys{i});
     if map.checked
