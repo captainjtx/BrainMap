@@ -24,6 +24,8 @@ classdef Electrode<handle
         thickness_ratio% simultaneously enlarge/shrink thickness 
         handles% [N*1] handles of electrode patch objects
         map_sig
+        
+        count% unique monotonically increasing id for new electrode
     end
     
     methods
@@ -34,6 +36,7 @@ classdef Electrode<handle
             obj.coor_interp=10;
             obj.map_alpha=0.8;
             obj.map_colormap='jet';
+            obj.count=0;
         end
         
         function save(obj)
@@ -51,6 +54,7 @@ classdef Electrode<handle
                 mapval.channame=obj.channame;
                 mapval.map=obj.map;
                 mapval.map_sig=obj.map_sig;
+                mapval.count=obj.count;
                 
                 save(fullfile(FilePath,FileName),'-struct','mapval','-mat','-v7.3');
             end

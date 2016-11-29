@@ -106,6 +106,7 @@ electrode.norm=coor-repmat(origin(:)',size(coor,1),1);
 electrode.checked=true;
 electrode.selected=ones(size(electrode.coor,1),1)*true;
 electrode.channame=channame;
+electrode.count=electrode.count+size(coor,1);
 
 electrode.map_sig=zeros(size(coor,1),1);
 electrode.map=ones(size(coor,1),1)*nan;

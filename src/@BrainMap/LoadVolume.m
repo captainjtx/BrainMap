@@ -19,7 +19,9 @@ if obj.mapObj.isKey(fpath)
 end
 
 obj.NotifyTaskStart('Loading volume ...');
-            
+
+cam_pos=[];
+cam_target=[];
 if ismember(ext,{'.nii','.mgz','.mgh','.bhdr','.hdr','.img','.nii.gz'})
     out= MRIread(fpath);
     volume=out.vol;
@@ -35,17 +37,13 @@ if ismember(ext,{'.nii','.mgz','.mgh','.bhdr','.hdr','.img','.nii.gz'})
     pixdim=out.volres;
    
 %     volume(volume>0.7)=0;
-    
-    
-    volume=permute(volume,[3,2,1]);
-    pixdim=pixdim([3,2,1]);
-    
-    volume=fliplr(volume);
-%     tmp=[1,0,0;0,-1,0;0,0,1]*[pixdim(1)*size(volume,1);pixdim(2)*size(volume,2);rotate.qfac*pixdim(3)*size(volume,3)];
-%     tmp=permute(tmp,[1,3,2]);
 
-    xdata=[0,pixdim(2)*size(volume,2)];
-    ydata=[0,pixdim(1)*size(volume,1)];
+    %For usual axial scan only, e.g. vol(:,:,n) is an axial plane
+    %Needs to be changed according to the scan direction
+%     volume=flip(volume,2);
+
+    xdata=[0,pixdim(1)*size(volume,2)];
+    ydata=[0,pixdim(2)*size(volume,1)];
     zdata=[0,pixdim(3)*size(volume,3)];
 elseif strcmp(ext,'.mat')
     dat=load(fpath);
@@ -63,9 +61,19 @@ elseif strcmp(ext,'.mat')
         pixdim(3)=dat.SpacingBetweenSlices;
     end
     
+    if isfield(dat,'CameraLocation')
+        cam_pos=dat.CameraLocation;
+    end
+    
+    if isfield(dat,'CameraTarget')
+        cam_target=dat.CameraTarget;
+    end
+    
     xdata=[0,pixdim(2)*size(volume,2)];
     ydata=[0,pixdim(1)*size(volume,1)];
     zdata=[0,pixdim(3)*size(volume,3)];
+    
+    
 end
 
 axis(obj.axis_3d);
@@ -94,12 +102,21 @@ num=obj.JFileLoadTree.getVolumeID()+1;
 mapval.file=fpath;
 mapval.ind=num;
 mapval.checked=true;
+mapval.campos=cam_pos;
+mapval.camtarget=cam_target;
 
 obj.mapObj([mapval.category,num2str(num)])=mapval;
 
 VolumeColormapCallback(obj);
 obj.JFileLoadTree.addVolume(fpath,true);
 VolumeRenderCallback(obj);
+if ~isempty(cam_pos)
+    campos(obj.axis_3d,cam_pos);
+end
+
+if ~isempty(cam_target)
+    camtarget(obj.axis_3d,cam_target);
+end
 obj.NotifyTaskEnd('Volume load complete !');
 end
 

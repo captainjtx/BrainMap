@@ -105,9 +105,10 @@ if obj.JTogNewElectrode.isSelected()
         electrode.radius_ratio=radius_ratio;
         electrode.thickness_ratio=thickness_ratio;
         electrode.map=nan;
+        electrode.map_sig=0;
         
     else
-        new_channame=num2str(size(electrode.coor,1)+1);
+        new_channame=num2str(electrode.count+1);
         
         electrode.coor=cat(1,electrode.coor,new_coor);
         electrode.norm=cat(1,electrode.norm,new_norm);
@@ -122,6 +123,8 @@ if obj.JTogNewElectrode.isSelected()
         electrode.thickness_ratio=cat(1,electrode.thickness_ratio,thickness_ratio);
         electrode.channame=cat(1,electrode.channame(:),new_channame);
         electrode.map=cat(1,electrode.map,nan);
+        electrode.map_sig=cat(1,electrode.map_sig,0);
+        electrode.count=electrode.count+1;
     end
     
     
@@ -170,7 +173,11 @@ elseif obj.JTogPickElectrode.isSelected()
                     datind=strcmp(dat.name,electrode.channame);
                     
                     P=electrode.coor(datind,:)';
-                    d=sqrt((P-Q2)'*(P-Q2)-((P-Q2)'*Q12)^2);
+                    try
+                        d=sqrt((P-Q2)'*(P-Q2)-((P-Q2)'*Q12)^2);
+                    catch
+                        disp(['error: ',num2str(e),'th contact']);
+                    end
                     
                     interp=cat(1,interp,d);
                     interph=cat(1,interph,patchObj);

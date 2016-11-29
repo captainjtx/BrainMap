@@ -31,6 +31,9 @@ if ~isfield(tmp,'map_sig')||isempty(tmp.map_sig)
     tmp.map_sig=zeros(size(tmp.coor,1),1);
 end
     
+if ~isfield(tmp,'count')||isempty(tmp.count)
+    tmp.count=0;
+end
 
 num=obj.JFileLoadTree.getElectrodeID+1;
 
@@ -65,6 +68,7 @@ electrode.selected=ones(size(electrode.coor,1),1)*true;
 electrode.channame=tmp.channame;
 electrode.map=tmp.map;
 electrode.map_sig=tmp.map_sig;
+electrode.count=tmp.count;
 
 electrode.radius_ratio=ones(size(electrode.coor,1),1);
 electrode.thickness_ratio=ones(size(electrode.coor,1),1);

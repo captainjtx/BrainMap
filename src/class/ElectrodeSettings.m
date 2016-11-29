@@ -51,7 +51,7 @@ classdef ElectrodeSettings<handle
             
             electrode=obj.bm.SelectedElectrode;
             
-            obj.select_ele=obj.bm.SelectedElectrode;
+            obj.select_ele=electrode;
             
             bmpos=get(obj.bm.fig,'position');
             sidepos = getpixelposition(obj.bm.SidePanel);

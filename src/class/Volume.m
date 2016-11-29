@@ -15,6 +15,8 @@ classdef Volume<handle
         h_sagittal
         h_coronal
         h_axial
+        campos
+        camtarget
     end
     
     methods
@@ -32,6 +34,8 @@ classdef Volume<handle
             if FileName~=0
                 mapval.category='Volume';
                 mapval.file=fullfile(FilePath,FileName);
+                mapval.CameraLocation=obj.campos;
+                mapval.CameraTarget=obj.camtarget;
                 
                 save(fullfile(FilePath,FileName),'-struct','mapval','-mat','-v7.3');
             end

@@ -343,7 +343,7 @@ classdef BrainMap < handle
             dx = locend(1) - obj.loc(1);           % calculate difference x
             dy = locend(2) - obj.loc(2);           % calculate difference y
             factor = 2;                         % correction mouse -> rotation
-            camorbit(obj.axis_3d,-dx/factor,-dy/factor);
+            camorbit(obj.axis_3d,-dx/factor,-dy/factor,'camera');
             
             if ~isempty(obj.light)
                 obj.light = camlight(obj.light,'headlight');        % adjust light
@@ -425,12 +425,20 @@ classdef BrainMap < handle
                         set(mapval.h_sagittal,'visible','on');
                         set(mapval.h_coronal,'visible','on');
                         set(mapval.h_axial,'visible','on');
+                        if ~isempty(mapval.campos)
+                            campos(obj.axis_3d,mapval.campos);
+                        end
+                        if ~isempty(mapval.camtarget)
+                            camtarget(obj.axis_3d,mapval.camtarget);
+                        end
                         mapval.checked=true;
                     else
                         set(mapval.handles,'visible','off');
                         set(mapval.h_sagittal,'visible','off');
                         set(mapval.h_coronal,'visible','off');
                         set(mapval.h_axial,'visible','off');
+                        mapval.campos=get(obj.axis_3d,'CameraPosition');
+                        mapval.camtarget=get(obj.axis_3d,'CameraTarget');
                         mapval.checked=false;
                     end 
                 case 'Surface'
@@ -591,8 +599,10 @@ classdef BrainMap < handle
             set(electrode.handles,'edgecolor','none');
             set(electrode.handles(logical(electrode.selected)),'edgecolor','y');
             
-            if electrode.ind==obj.electrode_settings.select_ele
-                notify(obj,'ElectrodeSettingsChange')
+            if obj.electrode_settings.valid
+                if electrode.ind==obj.electrode_settings.select_ele.ind
+                    notify(obj,'ElectrodeSettingsChange')
+                end
             end
             
             obj.NotifyTaskStart({dat.name,num2str(electrode.coor(datind,:))});
