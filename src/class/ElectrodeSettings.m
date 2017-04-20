@@ -159,7 +159,7 @@ classdef ElectrodeSettings<handle
                         electrode.channame{indices(1)}=evt.NewData;
                         
                         userdata=get(electrode.handles(indices(1)),'UserData');
-                        userdata.name=electrode.channame(indices(1));
+                        userdata.name=electrode.channame{indices(1)};
                         
                         set(electrode.handles(indices(1)),'UserData',userdata);
                     case 3

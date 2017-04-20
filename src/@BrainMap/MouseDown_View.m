@@ -177,6 +177,7 @@ elseif obj.JTogPickElectrode.isSelected()
                         d=sqrt((P-Q2)'*(P-Q2)-((P-Q2)'*Q12)^2);
                     catch
                         disp(['error: ',num2str(e),'th contact']);
+                        return;
                     end
                     
                     interp=cat(1,interp,d);
