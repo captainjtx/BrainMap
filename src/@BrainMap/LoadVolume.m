@@ -40,11 +40,20 @@ if ismember(ext,{'.nii','.mgz','.mgh','.bhdr','.hdr','.img','.nii.gz'})
 
     %For usual axial scan only, e.g. vol(:,:,n) is an axial plane
     %Needs to be changed according to the scan direction
-%     volume=flip(volume,2);
-
+    volume=flip(volume,2);
+    
     xdata=[0,pixdim(1)*size(volume,2)];
     ydata=[0,pixdim(2)*size(volume,1)];
     zdata=[0,pixdim(3)*size(volume,3)];
+    
+    %backward compatibility
+%     volume=permute(volume,[3,2,1]);
+%     pixdim=pixdim([3,2,1]);
+%     
+%     volume=fliplr(volume);
+%     xdata=[0,pixdim(2)*size(volume,2)];
+%     ydata=[0,pixdim(1)*size(volume,1)];
+%     zdata=[0,pixdim(3)*size(volume,3)];
 elseif strcmp(ext,'.mat')
     dat=load(fpath);
     volume=dat.volume;

@@ -215,6 +215,14 @@ obj.JViewInterfaceElectrodeMenu.setAccelerator(javaObjectEDT(KeyStroke.getKeyStr
 
 
 obj.JViewCameraMenu=javaObjectEDT(JMenu('Camera'));
+obj.JViewCameraSpecifyMenu=javaObjectEDT(JMenuItem('Specify'));
+set(handle(obj.JViewCameraSpecifyMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) SpecifyCamera(obj));
+
+obj.JViewCameraLoadMenu=javaObjectEDT(JMenuItem('Load'));
+set(handle(obj.JViewCameraLoadMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) LoadCamera(obj));
+
+obj.JViewCameraSaveMenu=javaObjectEDT(JMenuItem('Save'));
+set(handle(obj.JViewCameraSaveMenu,'CallbackProperties'),'MousePressedCallback',@(h,e) SaveCamera(obj));
 
 %%
 jMenuBar.add(obj.JFileMenu);
@@ -292,6 +300,9 @@ group3.add((obj.JViewInterfaceSurfaceMenu));
 group3.add((obj.JViewInterfaceElectrodeMenu));
 
 obj.JViewMenu.add(obj.JViewCameraMenu);
+obj.JViewCameraMenu.add(obj.JViewCameraSpecifyMenu);
+obj.JViewCameraMenu.add(obj.JViewCameraLoadMenu);
+obj.JViewCameraMenu.add(obj.JViewCameraSaveMenu);
 
 try
 delete(bmp)

@@ -67,6 +67,9 @@ classdef BrainMap < handle
         JViewMenu
         JViewLayoutMenu
         JViewCameraMenu
+        JViewCameraSpecifyMenu
+        JViewCameraLoadMenu
+        JViewCameraSaveMenu
         JViewLayoutOneMenu
         JViewLayoutTwoTwoMenu
         JViewLayoutOneThreeHorizontalMenu
@@ -223,6 +226,7 @@ classdef BrainMap < handle
             obj.varinit();
             
             obj.electrode_settings=ElectrodeSettings(obj);
+            addlistener(obj,'CameraPositionChange',@(src,evt) updateCameraPosition(obj));
         end
         
         function val=get.SelectedElectrode(obj)
@@ -349,6 +353,7 @@ classdef BrainMap < handle
                 obj.light = camlight(obj.light,'headlight');        % adjust light
             end
             obj.loc=locend;
+            notify(obj,'CameraPositionChange');
         end
         
         function Scroll_View(obj,src,evt)
@@ -427,6 +432,7 @@ classdef BrainMap < handle
                         set(mapval.h_axial,'visible','on');
                         if ~isempty(mapval.campos)
                             campos(obj.axis_3d,mapval.campos);
+                            notify(obj,'CameraPositionChange');
                         end
                         if ~isempty(mapval.camtarget)
                             camtarget(obj.axis_3d,mapval.camtarget);
@@ -766,6 +772,79 @@ classdef BrainMap < handle
                 electrode=obj.redrawNewMap(electrode);
             end
         end
+        
+        function SpecifyCamera(obj)
+            prompt={'Camera Target','Camera Position'};
+            
+            def={num2str(camtarget(obj.axis_3d)),num2str(campos(obj.axis_3d))};
+            
+            title='Camera specification';
+            
+            answer=inputdlg(prompt,title,1,def);
+            
+            if isempty(answer)
+                return
+            end
+            
+            ct=str2num(answer{1});
+            
+            if ~isempty(ct)&&~any(isnan(ct))
+                camtarget(obj.axis_3d,ct);
+            end
+            
+            cp=str2num(answer{2});
+            if ~isempty(cp)&&~any(isnan(cp))
+                campos(obj.axis_3d,cp);
+            end
+        end
+        
+        function SaveCamera(obj)
+            [FileName,FilePath,~]=uiputfile({'*.txt';'*.csv'}...
+                ,'save your camera view','view');
+            if FileName~=0
+                filename=fullfile(FilePath,FileName);
+                fid=fopen(filename,'w');
+                
+                ct=camtarget(obj.axis_3d);
+                cp=campos(obj.axis_3d);
+                fprintf(fid,'%s\n%s\n%f,%f,%f\n%s\n%f,%f,%f','%Rows commented by % will be ignored',...
+                    '%Camera Target',ct(1),ct(2),ct(3),...
+                    '%Camera Position',cp(1),cp(2),cp(3));
+                fclose(fid);
+            end
+        end
+        function LoadCamera(obj)
+            [FileName,FilePath,~]=uigetfile({...
+                '*.txt';'*.csv'},...
+                'Select your camera view file','view');
+            if ~FileName
+                return
+            end
+            
+            filename=fullfile(FilePath,FileName);
+            
+            fileID = fopen(filename);
+            C = textscan(fileID,'%f%f%f',...
+                'Delimiter',',','TreatAsEmpty',{'NA','na'},'CommentStyle','%');
+            fclose(fileID);
+            
+            if ~any(isempty(C{1}))&&~any(isempty(C{2}))&&~any(isempty(C{3}))
+                
+                if length(C{1})==1&&length(C{2})==1&&length(C{3})==1
+                    camtarget(obj.axis_3d,[C{1}(1),C{2}(1),C{3}(1)]);
+                elseif length(C{1})==2&&length(C{2})==2&&length(C{3})==2
+                    camtarget(obj.axis_3d,[C{1}(1),C{2}(1),C{3}(1)]);
+                    campos(obj.axis_3d,[C{1}(2),C{2}(2),C{3}(2)]);
+                    notify(obj,'CameraPositionChange');
+                end
+            end
+        end
+        
+        function updateCameraPosition(obj)
+            p=campos(obj.axis_3d);
+            info={[num2str(p(1),'%5.1f'),': Cam X'],[num2str(p(2),'%5.1f'),': Cam Y'],[num2str(p(3),'%5.1f'),': Cam Z']};
+            set(obj.TextInfo3,'String',info,'FontSize',0.2,'Foregroundcolor','k','HorizontalAlignment','right');
+        end
     end
     methods
         LoadSurface(obj)
@@ -797,5 +876,6 @@ classdef BrainMap < handle
     end
     events
         ElectrodeSettingsChange
+        CameraPositionChange
     end
 end

@@ -78,6 +78,7 @@ public class FileLoadTree
     private DefaultMutableTreeNode VolumeNode = null;
     private DefaultMutableTreeNode OthersNode = null;
     private DefaultTreeModel defaultTreeModel;
+    private CheckBoxNodeRenderer renderer;
     
     public int getElectrodeID()
     {
@@ -137,8 +138,8 @@ public class FileLoadTree
         
         OthersNode=node;
         
-        CheckBoxNodeRenderer renderer=new CheckBoxNodeRenderer();
-        tree.setCellRenderer(new CheckBoxNodeRenderer());
+        renderer=new CheckBoxNodeRenderer();
+        tree.setCellRenderer(renderer);
         
         final CheckBoxNodeEditor editor = new CheckBoxNodeEditor(tree);
         tree.setCellEditor(editor);
@@ -782,6 +783,18 @@ public class FileLoadTree
         }
         
     }
+    
+//     public void renameSelectedNode(final String name){
+//         DefaultMutableTreeNode node;
+//         
+//         TreePath[] paths = tree.getSelectionPaths();
+//         tree.setSelectionPath(null);
+//         for (int i = 0; i < paths.length; i++) {
+//             node = (DefaultMutableTreeNode) (paths[i].getLastPathComponent());
+//             
+//             defaultTreeModel.removeNodeFromParent(node);
+//         }
+//     }
     public void deleteSelectedNode() {
         DefaultMutableTreeNode node;
         
