@@ -47,6 +47,7 @@ if ~isempty(electrode)
         
         electrode.channame=cat(1,electrode.channame(:),new_channame);
         electrode.map=cat(1,electrode.map,nan);
+        electrode.map_sig=cat(1,electrode.map_sig,0);
         
         [faces,vertices] = createContact3D(new_coor,new_norm,new_radius,new_thickness);
         

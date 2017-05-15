@@ -1,7 +1,7 @@
 function LoadElectrode( obj )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-[filename,pathname]=uigetfile({'*.mat;*.txt','Data format (*.mat)'},'Please select electrode file');
+[filename,pathname,FilterIndex]=uigetfile({'*.mat;*.txt','Data format (*.mat,*.txt)'},'Please select electrode file');
 fpath=[pathname filename];
 if ~filename
     return;
@@ -12,7 +12,29 @@ if obj.mapObj.isKey(fpath)
     return
 end
 
-tmp=load(fpath,'-mat');
+[~,~,ext]=fileparts(fpath);
+
+if strcmp(ext,'.mat')
+    tmp=load(fpath,'-mat');
+elseif strcmp(ext,'.txt')
+    tmp=ReadPositionFromTxt(fpath);
+end
+
+if ~isfield(tmp,'coor')||isempty(tmp.coor)
+    errordlg('No coordinates !');
+end
+
+if ~isfield(tmp,'radius')||isempty(tmp.radius)
+    tmp.radius=ones(size(tmp.coor,1),1)*0.5;
+end
+
+if ~isfield(tmp,'thickness')||isempty(tmp.thickness)
+    tmp.thickness=ones(size(tmp.coor,1),1)*0.4;
+end
+
+if ~isfield(tmp,'color')||isempty(tmp.color)
+    tmp.color=ones(size(tmp.coor,1),1)*[1,0.8,0.6];
+end
 
 if ~isfield(tmp,'norm')||isempty(tmp.norm)
     tmp.norm=tmp.coor;
@@ -79,6 +101,16 @@ end
 
 obj.mapObj([electrode.category,num2str(num)])=electrode;
 obj.JFileLoadTree.addElectrode(fpath,true);
+end
+
+function electrode = ReadPositionFromTxt(filename)
+%Montage file formats:
+%ChannelName,x_pos,y_pos,z_pos(optional)
+fileID = fopen(filename);
+C = textscan(fileID,'%f %f %f',...
+    'Delimiter',',','TreatAsEmpty',{'NA','na'},'CommentStyle','%');
+fclose(fileID);
+electrode.coor=[C{1} C{2} C{3}];
 end
 
 
