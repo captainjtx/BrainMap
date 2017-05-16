@@ -146,7 +146,12 @@ obj.JVolumeSmoothSpinner =javaObjectEDT(JSpinner(model));
 [jh,gh]=javacomponent(obj.JVolumeSmoothSpinner,[0,0,1,1],obj.volumetoolpane);
 set(gh,'Units','Norm','Position',[0.75,0.74,0.22,0.06]);
 set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) VolumeSmoothSpinnerCallback(obj));
-
+%%
+%volume flip
+obj.JVolumeFlipLeftRight=javaObjectEDT(JRadioButton('Flip left and right',1));
+[jh,gh]=javacomponent(obj.JVolumeFlipLeftRight,[0,0,1,1],obj.volumetoolpane);
+set(gh,'Units','Norm','Position',[0,0.65,1,0.06]);
+set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) VolumeFlipCallback(obj));
 %%
 %electrode tool pane=======================================================
 obj.electrodetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73]);
