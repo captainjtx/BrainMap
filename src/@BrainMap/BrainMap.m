@@ -148,6 +148,7 @@ classdef BrainMap < handle
         JVolumeMinSpinner
         JVolumeMaxSpinner
         JVolumeSmoothSpinner
+        JVolumeFlipLeftRight
         
         JElectrodeColorBtn
         JExtraBtn1
@@ -844,6 +845,9 @@ classdef BrainMap < handle
             p=campos(obj.axis_3d);
             info={[num2str(p(1),'%5.1f'),': Cam X'],[num2str(p(2),'%5.1f'),': Cam Y'],[num2str(p(3),'%5.1f'),': Cam Z']};
             set(obj.TextInfo3,'String',info,'FontSize',0.2,'Foregroundcolor','k','HorizontalAlignment','right');
+        end
+        
+        function VolumeFlipCallback(obj)
         end
     end
     methods
