@@ -40,7 +40,9 @@ if ismember(ext,{'.nii','.mgz','.mgh','.bhdr','.hdr','.img','.nii.gz'})
 
     %For usual axial scan only, e.g. vol(:,:,n) is an axial plane
     %Needs to be changed according to the scan direction
-    volume=flip(volume,2);
+    if obj.JVolumeFlipLeftRight.isSelected();
+        volume=flip(volume,2);
+    end
     
     xdata=[0,pixdim(1)*size(volume,2)];
     ydata=[0,pixdim(2)*size(volume,1)];
