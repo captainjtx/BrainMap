@@ -6,6 +6,8 @@ if ~isempty(electrode)
     
     if exist([open_dir,'/app/spatial map'],'dir')==7
         open_dir=[open_dir,'/app/spatial map'];
+    elseif exist([open_dir,'/../app/spatial map'],'dir')==7
+        open_dir=[open_dir,'/../app/spatial map'];
     else
         open_dir='.';
     end
