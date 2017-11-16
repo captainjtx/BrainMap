@@ -85,7 +85,7 @@ num=obj.JFileLoadTree.getElectrodeID+1;
 electrode=Electrode;
 
 for i=1:size(coor,1)
-    userdat.ele=num;
+    userdat.ele=electrode;
     userdat.name=channame{i};
     
     [faces,vertices] = createContact3D(coor(i,:),coor(i,:)-origin(:)',obj.grid_r,obj.grid_thickness);
