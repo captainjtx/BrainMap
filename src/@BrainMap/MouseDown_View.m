@@ -131,7 +131,7 @@ if obj.JTogNewElectrode.isSelected()
     [faces,vertices] = createContact3D(new_coor,new_norm,new_radius,new_thickness);
     
     userdat.name=new_channame;
-    userdat.ele=electrode.ind;
+    userdat.ele=electrode;
     
     new_h=patch('parent',obj.axis_3d,'faces',faces,'vertices',vertices,...
         'facecolor',obj.ecolor,'edgecolor','y','UserData',userdat,...
