@@ -591,7 +591,7 @@ classdef BrainMap < handle
        
         function ClickOnElectrode(obj,src,evt)
             dat=get(src,'UserData');
-            electrode=obj.mapObj(['Electrode',num2str(dat.ele)]);
+            electrode = dat.ele;
             type=get(obj.fig,'selectiontype');
 
             datind=strcmp(dat.name,electrode.channame);
