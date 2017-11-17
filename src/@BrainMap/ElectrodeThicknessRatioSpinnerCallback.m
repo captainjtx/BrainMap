@@ -7,7 +7,7 @@ if ~isempty(electrode)
     
     for i=1:length(ind)
         userdat.name=electrode.channame{ind(i)};
-        userdat.ele=electrode.ind;
+        userdat.ele=electrode;
         
         
         [faces,vertices] = createContact3D...
