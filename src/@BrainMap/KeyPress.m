@@ -124,7 +124,7 @@ if ~isempty(electrode)
     if redraw_electrode
         for i=1:length(mov_ind)
             userdat.name=electrode.channame{mov_ind(i)};
-            userdat.ele=electrode.ind;
+            userdat.ele=electrode;
             
             electrode.norm(mov_ind(i),:)=electrode.coor(mov_ind(i),:)-camtarget(obj.axis_3d);
             [faces,vertices] = createContact3D(electrode.coor(mov_ind(i),:),electrode.norm(mov_ind(i),:),electrode.radius(mov_ind(i)),electrode.thickness(mov_ind(i)));
