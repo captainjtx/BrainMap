@@ -106,6 +106,9 @@ classdef BrainMap < handle
         JLight
         JCanvasColor
         
+        JZoomIn
+        JZoomOut
+        
         IconLightOn
         IconLightOff
         
@@ -848,6 +851,13 @@ classdef BrainMap < handle
         end
         
         function VolumeFlipCallback(obj)
+        end
+        
+        function ZoomInCallback(obj)
+            zoom(1.1);
+        end
+        function ZoomOutCallback(obj)
+            zoom(1/1.1);
         end
     end
     methods
