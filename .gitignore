@@ -2,3 +2,5 @@
 db/cfg/brainmap.cfg
 db/icon/dev.pptx
 *.swp
+*.asv
+*.class
