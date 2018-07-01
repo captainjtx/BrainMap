@@ -10,7 +10,11 @@ if ~isempty(electrode)
         
         newmap=electrode.F(newpos(:,1),newpos(:,2),newpos(:,3));
         
-        tri=delaunay(newpos(:,1),newpos(:,2));
+        % use PCA to project 3d points into 2d plane
+        [V, D, ~] = eig(newpos'*newpos);
+        [~, ind] = sort(diag(D));
+        V = V(:, ind);
+        tri=delaunay(newpos*V(:, 2),newpos * V(:,3));
         
         cmapv=zeros(length(newmap),3);
         

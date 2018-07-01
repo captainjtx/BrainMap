@@ -4,7 +4,11 @@ if k==0
     newpos=pos;
     return
 else
-    tri=delaunay(pos(:,1),pos(:,2));
+    % use PCA to project 3d points into 2d plane
+    [V, D, ~] = eig(pos'*pos);
+    [~, ind] = sort(diag(D));
+    V = V(:, ind);
+    tri=delaunay(pos*V(:,2),pos*V(:,3));
     
     edge_pair=[];
     newpos=[];
