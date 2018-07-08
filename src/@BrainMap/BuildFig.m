@@ -151,7 +151,7 @@ set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) VolumeSmoothSp
 obj.JVolumeFlipLeftRight=javaObjectEDT(JRadioButton('Flip left and right',1));
 [jh,gh]=javacomponent(obj.JVolumeFlipLeftRight,[0,0,1,1],obj.volumetoolpane);
 set(gh,'Units','Norm','Position',[0,0.65,1,0.06]);
-set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) VolumeFlipCallback(obj));
+set(handle(jh,'CallbackProperties'),'MouseReleasedCallback',@(h,e) VolumeFlipCallback(obj));
 %%
 %electrode tool pane=======================================================
 obj.electrodetoolpane=uipanel(obj.SidePanel,'units','normalized','position',[0,0,1,0.73]);
@@ -247,11 +247,17 @@ obj.JMapInterpolationSpinner =javaObjectEDT(JSpinner(model));
 set(gh,'Units','Norm','Position',[0.75,0.35,0.22,0.06]);
 set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapInterpolationCallback(obj));
 %%
+%project 3d->2d
+obj.JMapTriCanvas=javaObjectEDT(JRadioButton('Map triangulation based on 2D canvas'));
+[jh,gh]=javacomponent(obj.JMapTriCanvas,[0,0,1,1],obj.electrodetoolpane);
+set(gh,'Units','Norm','Position',[0,0.25,1,0.06]);
+set(handle(jh,'CallbackProperties'),'MouseReleasedCallback',@(h,e) MapInterpolationCallback(obj));
+%%
 %significant
 obj.JMapOnlyShowSig=javaObjectEDT(JRadioButton('Show only significant channels'));
 [jh,gh]=javacomponent(obj.JMapOnlyShowSig,[0,0,1,1],obj.electrodetoolpane);
-set(gh,'Units','Norm','Position',[0,0.25,1,0.06]);
-set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapShowSigCallback(obj));
+set(gh,'Units','Norm','Position',[0,0.15,1,0.06]);
+set(handle(jh,'CallbackProperties'),'MouseReleasedCallback',@(h,e) MapShowSigCallback(obj));
 %%
 obj.TextInfo1=uicontrol('parent',obj.InfoPanel,'units','normalized','position',[0,0,0.2,1],...
     'style','Text','String','','HorizontalAlignment','left','fontweight','bold','fontunits','normalized','fontsize',0.2);
