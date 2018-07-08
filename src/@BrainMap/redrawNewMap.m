@@ -30,16 +30,13 @@ try
 catch
 end
     
-%newpos=interp_tri(pos,electrode.coor_interp);
-newpos = pos;
+newpos=interp_tri(pos,electrode.coor_interp, obj.JMapTriCanvas.isSelected());
 
 newmap=F(newpos(:,1),newpos(:,2),newpos(:,3));
 
 % use PCA to project 3d points into 2d plane
-[V, D, ~] = eig(newpos'*newpos);
-[~, ind] = sort(diag(D));
-V = V(:, ind);
-tri=delaunay(newpos*V(:, 2),newpos * V(:,3));
+[x, y] = project_3d_to_2d(newpos, obj.JMapTriCanvas.isSelected());
+tri=delaunay(x, y);
 
 cmapv=zeros(length(newmap),3);
 for i=1:length(newmap)
