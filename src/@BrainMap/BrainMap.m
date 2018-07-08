@@ -180,6 +180,7 @@ classdef BrainMap < handle
         JMapAlphaSlider
         
         JMapInterpolationSpinner
+        JMapTriCanvas
         JMapOnlyShowSig
         
         TextInfo1
