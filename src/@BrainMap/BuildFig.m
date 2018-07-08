@@ -241,7 +241,7 @@ set(handle(jh,'CallbackProperties'),'StateChangedCallback',@(h,e) MapAlphaSpinne
 %map interpolation
 uicontrol('parent',obj.electrodetoolpane,'style','text','units','normalized','position',[0,0.35,0.5,0.06],...
     'string','Map interpolation level','horizontalalignment','left','fontunits','normalized','fontsize',0.5);
-model = javaObjectEDT(SpinnerNumberModel(java.lang.Integer(10),java.lang.Integer(0),java.lang.Integer(20),java.lang.Integer(1)));  
+model = javaObjectEDT(SpinnerNumberModel(java.lang.Integer(0),java.lang.Integer(0),java.lang.Integer(20),java.lang.Integer(1)));  
 obj.JMapInterpolationSpinner =javaObjectEDT(JSpinner(model));
 [jh,gh]=javacomponent(obj.JMapInterpolationSpinner,[0,0,1,1],obj.electrodetoolpane);
 set(gh,'Units','Norm','Position',[0.75,0.35,0.22,0.06]);
