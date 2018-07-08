@@ -1,14 +1,11 @@
-function newpos=interp_tri(pos,k)
-
+function newpos=interp_tri(pos, k, proj_cam_tgt)
+% if proj_camtgt is true, first get rig of campos->camtarget component
 if k==0
     newpos=pos;
     return
 else
-    % use PCA to project 3d points into 2d plane
-    [V, D, ~] = eig(pos'*pos);
-    [~, ind] = sort(diag(D));
-    V = V(:, ind);
-    tri=delaunay(pos*V(:,2),pos*V(:,3));
+    [x, y] = project_3d_to_2d( pos, proj_cam_tgt );
+    tri=delaunay(x, y);
     
     edge_pair=[];
     newpos=[];
@@ -33,7 +30,7 @@ else
     
     newpos=unique(newpos,'rows');
     
-    newpos=interp_tri(newpos,k-1);
+    newpos=interp_tri(newpos,k-1,proj_cam_tgt);
 end
 
 end
